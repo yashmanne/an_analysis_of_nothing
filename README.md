@@ -3,7 +3,8 @@
 Exploring character occurrences and NLP with Seinfeld scripts.
 
 ## Project Goal:
-* We aim to build a web application/dashboard that allows users to explore the occurence
+<!-- * We aim to build a web application/dashboard that allows users to explore the occurence -->
+* We aim to build a web application/dashboardfor Seinfeld fans to explore and query dialogue snippets, identify correlations between character appearances and audience ratings, and chronicle appearances of various characters across the series.
 
 ## Project Type:
 * Tool
