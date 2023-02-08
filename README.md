@@ -1,6 +1,5 @@
 # An Analysis of Nothing
 ---
-Exploring character occurrences and NLP with Seinfeld scripts.
 
 ## Project Goal:
 <!-- * We aim to build a web application/dashboard that allows users to explore the occurence -->
