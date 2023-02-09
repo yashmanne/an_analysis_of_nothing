@@ -20,3 +20,28 @@ SEINFELD_PARENT_TCONST = 'tt0098904'
 IMDB_EPISODE = 'https://datasets.imdbws.com/title.episode.tsv.gz'
 IMDB_RATING = 'https://datasets.imdbws.com/title.ratings.tsv.gz'
 IMDB_BASICS = 'https://datasets.imdbws.com/title.basics.tsv.gz'
+
+# Conversion of Episode Numbers
+MAP_IMDB_WIKI = {
+    1: {},
+    2: {},
+    3: {e_num: e_num + 1 for e_num in range(18, 23)},
+    4: {},
+    5: {},
+    6: {e_num: e_num + 1 for e_num in range(15, 24)},
+    7: {e_num: e_num + 1 for e_num in range(15, 21)},
+    8: {},
+    9: {22: 23}
+}
+MAP_IMDB_WIKI[7].update({e_num: e_num + 2 for e_num in range(21, 23)})
+MAP_IMDB_NETFLIX = {
+    1: {},
+    2: {},
+    3: {},
+    4: {e_num: e_num - 1 for e_num in range(4, 24)},
+    5: {e_num: e_num - 1 for e_num in range(20, 23)},
+    6: {},
+    7: {},
+    8: {},
+    9: {}
+}

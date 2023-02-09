@@ -1,6 +1,7 @@
 """
 Contains functions to load data from online sources.
 """
+import os
 import numpy as np
 import pandas as pd
 
@@ -48,20 +49,21 @@ def read_imdb_metadata():
     seinfeld_id = data_constants.SEINFELD_PARENT_TCONST
 
     # Gather all episode metadata
+    print('Gathering Episode Info...')
     all_eps = pd.read_csv(data_constants.IMDB_EPISODE, delimiter='\t')
     all_eps = all_eps[all_eps.parentTconst == seinfeld_id]
-    epi_ids = set(all_eps['tconst'].values)
-
+    #   Season 5, Episode 19 doubled in data.
+    epi_ids = set(all_eps['tconst'].values) - {'tt19390512'}
     # Gather all rating data
+    print('Gathering Rating Data...')
     ratings = pd.read_csv(data_constants.IMDB_RATING, delimiter='\t')
     ratings = ratings[ratings.tconst.isin(epi_ids)]
-
     # Gather additional metadata
+    print('Gathering Title & Run Time Information...')
     basics = pd.read_csv(data_constants.IMDB_BASICS, delimiter='\t',
         usecols=['tconst', 'originalTitle', 'runtimeMinutes']
     )
     basics = basics[basics.tconst.isin(epi_ids)]
-
     # Join subsets together & convert missing values to None
     final_df = (all_eps.merge(ratings, on=['tconst'])
         .merge(basics, on=['tconst'])
@@ -76,11 +78,27 @@ def read_imdb_metadata():
     final_df = (final_df.sort_values(by=['seasonNumber', 'episodeNumber'])
         .reset_index(drop=True)
     )
-    #TO DO: Correct for EPISODE NUMBERING MISMATCH.
+    # Correct episode number so it matches that of Kaggle/Wiki
+    map_wiki = data_constants.MAP_IMDB_WIKI
+    map_netflix = data_constants.MAP_IMDB_NETFLIX
+    final_df['EpisodeNo'] = (final_df[['seasonNumber', 'episodeNumber']]
+        .apply(lambda x: map_wiki[x[0]].get(x[1], x[1]), axis=1)
+    )
+    final_df['EpiNo_Netflix'] = (final_df[['seasonNumber', 'episodeNumber']]
+        .apply(lambda x: map_netflix[x[0]].get(x[1], x[1]), axis=1)
+    )
+    # Remove other redundant columns & clean up order
+    final_df.drop(columns = ['episodeNumber', 'parentTconst'], inplace=True)
+    final_df.rename(columns={'seasonNumber': 'Season'}, inplace=True)
+
+    final_df = final_df[
+        ['tconst', 'originalTitle', 'Season',
+         'EpisodeNo', 'EpiNo_Netflix', 'numVotes', 'averageRating']]
     return final_df
 
 
-# Notes
+"""
+NOTES:
 # EPISODE_LINK has 174 rows instead of 180 on wiki:
 # # considers S5E18-19 as 1 big episode (Raincoats) stored as ep 18 but no ep 19
 # # Omits S6E14-15 (The Highlights of 100) -- contains no new content. No ep 14 or 15
@@ -89,10 +107,14 @@ def read_imdb_metadata():
 
 # IMDB has 173 rows:
 # # Considers S3Ep17-18 (The Boyfriend) as 1 episode. Numbering after differs
+# # Considers S4Ep23-24 (The Pilot) as 1 episode. Numbering after differs
 # # DOES consider S5E18-19 as 1 big episode #18 (Raincoats).
 # # # but also puts extra entry for #19 that can can remove!
 # #  DOES NOT omit S6E14-15 (The Highlights of 100). Instead stores as Ep 14. Numbering after differs
 # # Considers S7E14-15 as 1 big episode (The Cadillac) as ep 14. Numbering after differs
 # # Considers S7E21-22 as 1 big episode (The Bottle Deposit) as ep 20. Numbering after differs
 # # DOES NOT omits S9E21-22 (The Clip Show). Instead stores as Ep 21. Numbering after differs
-# # DOES Coniders S9E23-24 (The Finale) as 1 big episode but stores as ep 22.
+# # DOES consider S9E23-24 (The Finale) as 1 big episode but stores as ep 22.
+
+# Netflix follows IMDb numbering (after deleting 5.19) but also combines S4E3-4 into 1 episode.
+"""
