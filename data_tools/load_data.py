@@ -21,6 +21,14 @@ def read_scripts():
             'EpisodeNo': int
         }
     )
+    # Fix Season 1. Ep1 is combination of Ep1&2. Need to split into 2.
+    # Episode 1 ends at Line 210.
+    # Map Ep1 to 0, then add 1 to all episodes in season 1.
+    df.loc[0:210, 'EpisodeNo'] = 0
+    season_mask = df.Season == 1
+    df.loc[season_mask, 'EpisodeNo'] = df.loc[season_mask, 'EpisodeNo'] + 1
+    df.loc[season_mask, 'SEID'] = df.loc[season_mask, 'SEID'].str[:5] +\
+                                df.loc[season_mask, 'EpisodeNo'].astype(str)
     return df
 
 def read_episode_info():
@@ -37,6 +45,12 @@ def read_episode_info():
             'EpisodeNo': int
         }
     )
+    # Fix Season 1's Mapping (have 2 Ep 1s)
+    # Remap from 1,1,2,3,4 into 1,2,3,4,5
+    season_mask = df.Season == 1
+    for ind in df.loc[season_mask].index:
+        df.loc[ind, 'EpisodeNo'] = ind + 1
+        df.loc[ind, 'SEID'] = f'S01E{ind + 1:02d}'
     return df
 
 def read_imdb_metadata():
