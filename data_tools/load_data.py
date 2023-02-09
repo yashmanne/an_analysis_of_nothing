@@ -106,8 +106,13 @@ def read_imdb_metadata():
     final_df.rename(columns={'seasonNumber': 'Season'}, inplace=True)
 
     final_df = final_df[
-        ['tconst', 'originalTitle', 'Season',
-         'EpisodeNo', 'EpiNo_Netflix', 'numVotes', 'averageRating']]
+        ['tconst', 'originalTitle', 'Season', 'EpisodeNo', 'EpiNo_Netflix',
+         'runtimeMinutes', 'numVotes', 'averageRating']]
+    final_df = final_df.astype({
+            'EpiNo_Netflix': int,
+            'runtimeMinutes': float,
+        }
+    )
     return final_df
 
 
