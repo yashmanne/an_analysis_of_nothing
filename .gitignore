@@ -1,0 +1,13 @@
+# Data Files
+*.csv
+*.zip
+
+# PyCharm
+.idea/
+
+
+# Python
+.ipynb_checkpoints
+*.ipynb_checkpoints
+*__pycache__*
+*/__pycache/
