@@ -38,36 +38,36 @@ The data used for this application was downloaded from [Kaggle](https://www.kagg
 ### Episode Recommendation
 
 #### Episode Similarity
-Website: Display “Enter/choose your favorite episodes!”.
-User: Selects n ranked episode titles in order of favorability.
-Could be a text field/auto-fill field or a dropdown menu.
-Website: Returns 3 potential episodes to watch based on similarity to prior episodes and 1 that is vastly different.
+1. Website: Display “Enter/choose your favorite episodes!”.
+2. User: Selects n ranked episode titles in order of favorability.
+3. Could be a text field/auto-fill field or a dropdown menu.
+4. Website: Returns 3 potential episodes to watch based on similarity to prior episodes and 1 that is vastly different.
 
 #### Advanced Character Level: (Episode Recommender with greater search criteria)
-Website: Display “Advanced Episode Recommender”.
-User: Choose on a dropdown menu which character(s) must be the main focus of the episode.
-Website: Returns 3 potential episodes to watch based on similarity to prior episodes and where the focus is the selected character, and 1 that is vastly different.
+1. Website: Display “Advanced Episode Recommender”.
+2. User: Choose on a dropdown menu which character(s) must be the main focus of the episode.
+3. Website: Returns 3 potential episodes to watch based on similarity to prior episodes and where the focus is the selected 4. character, and 1 that is vastly different.
 
 ### Episode Querying
 
 #### General
-User: Utilizes the search bar to type in general events/occurrences (X goes to a movie, X fights with Y, etc).
-User: Clicks the search button.
-Website: Displays a list of episodes that satisfy the query.
-User: Click on any episode to learn more (descriptive analytics).
+1. User: Utilizes the search bar to type in general events/occurrences (X goes to a movie, X fights with Y, etc).
+2. User: Clicks the search button.
+3. Website: Displays a list of episodes that satisfy the query.
+4. User: Click on any episode to learn more (descriptive analytics).
 
 #### Specific
-User: Select advanced search option.
-User: Input key words in the search bar.
-User: Select the season, character, and/or episode rank (range).
-User: Click the search button.
-Website: Display a list of episodes that fit the user entered criteria (descriptive analytics).
+1. User: Select advanced search option.
+2. User: Input key words in the search bar.
+3. User: Select the season, character, and/or episode rank (range).
+4. User: Click the search button.
+5. Website: Display a list of episodes that fit the user entered criteria (descriptive analytics).
 
 ### Descriptive Analytics
-Website: List of episodes from general or specific search.
-User: Selects an episode of interest.
-Website: Returns dashboard of descriptive statistics and visualizations.
-User: Filters or toggles descriptive analytics as seen fit.
+1. Website: List of episodes from general or specific search.
+2. User: Selects an episode of interest.
+3. Website: Returns dashboard of descriptive statistics and visualizations.
+4. User: Filters or toggles descriptive analytics as seen fit.
 
 
 
