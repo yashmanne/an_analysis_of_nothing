@@ -1,6 +1,6 @@
-#Component Specification
+# Component Specification
 
-##Software Components
+## Software Components
 
 ### Data Manager
 
@@ -51,27 +51,26 @@ The user uses the search bar on the website to enter general events/occurrences 
 
 Once the user selects an episode, the **Episode Metric Visualizer** retrieves the episodes metadata from the **Data Manager**. It then creates standard plots/diagrams with that episode's analytics. These plots/diagrams are displayed to the user on the website.
 
-![](Sequence Diagram.png)
+![Sequence Diagram](Sequence_Diagram.png)
 
-##Preliminary Plan
+## Preliminary Plan
 
 1. Scrape the data
-* Dialogue dataset
-* Episode metadata dataset
-* Rating info for each episode dataset
-* Episode summaries and keywords dataset
+    * Dialogue dataset
+    * Episode metadata dataset
+    * Rating info for each episode dataset
+    * Episode summaries and keywords dataset
 2. Clean the data
-* Matching episodes across all sources
+    * Matching episodes across all sources
 3. Sketch website - create an initial design
 4. Write test cases
 5. Implement unified feature generation
-* Lines per episode
-* Episode sentiment
-* Line sentiment
-* Overall episode focus (to potentially update IMDb keywords for each episode)
-* Calculate cosine similarities
+    * Lines per episode
+    * Episode sentiment
+    * Line sentiment
+    * Overall episode focus (to potentially update IMDb keywords for each episode)
+    * Calculate cosine similarities
 6. Implement visualization of episode metrics
 7. Implement Episode Search Query 
 8. Implement Episode Recommender
-
 
