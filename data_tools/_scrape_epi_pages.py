@@ -40,14 +40,15 @@ def scrape_data():
         }
         for epi_id in epi_ids
     }
-    # IMDb Description
+    # IMDb Description From Season Pages
     for szn in tqdm(range(1, 10), desc="Scraping IMDb Descriptions"):
         url = data_constants.IMDB_DESC.format(szn=szn)
         response = requests.get(url)
         page = BeautifulSoup(response.text, 'html.parser')
         episodes = page.find_all('div', class_='info')
         for episode in tqdm(episodes, leave=False):
-            epi_id = str(episode.find('strong')).split('title/')[1][:9]
+            epi_id = str(episode.find('strong')).split('title/')[1]
+            epi_id = epi_id.split('/')[0]
             description = episode.find('div',
                 class_='item_description').text.strip()
             if epi_id in epi_ids:
@@ -58,6 +59,7 @@ def scrape_data():
                 updated_desc = texts['tt0697764']['Description'] +\
                     '\n' + description
                 texts['tt0697764']['Description'] = updated_desc
+    # Parse Individual Episode Pages
     for epi_id in tqdm(epi_ids, desc="Scraping Summaries & Key Words"):
         # User Summaries
         url = data_constants.IMDB_SUMMARY.format(tconst=epi_id)
@@ -77,9 +79,16 @@ def scrape_data():
             for kw in page.find_all('div', class_="sodatext")]
         for keyword in keywords:
             texts[epi_id]['keyWords'].append(keyword)
+
     texts = pd.DataFrame(texts).T.reset_index()
     texts['Summaries'] = texts.Summaries.apply(lambda x: x[1:])
     texts = texts.rename(columns={'index': 'tconst'})
+
+    # Clean up summaries to remove author tags:
+    remove_author_tag = lambda summaries: \
+        [summary.split('—')[0] if len(summary.split('—')) == 2
+            else summary for summary in summaries]
+    texts.Summaries = texts.Summaries.apply(remove_author_tag)
     return texts
 
 if __name__ == '__main__':
