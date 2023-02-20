@@ -1,8 +1,8 @@
 """
 Contains functions to load data from online sources.
 """
-import os
-import numpy as np
+# import os
+# import numpy as np
 import pandas as pd
 
 from . import data_constants
@@ -15,7 +15,9 @@ def read_scripts():
     :return: Pandas Data Frame
     """
     df = pd.read_csv(data_constants.SCRIPTS_LINK)
+    # pylint: disable=no-member
     df.drop(columns=df.columns[0], inplace=True)
+    # pylint: disable=no-member
     df = df.astype({
             'Season': int,
             'EpisodeNo': int
@@ -39,7 +41,9 @@ def read_episode_info():
     :return: Pandas Data Frame
     """
     df = pd.read_csv(data_constants.EPISODE_LINK)
+    # pylint: disable=no-member
     df.drop(columns=df.columns[0], inplace=True)
+    # pylint: disable=no-member
     df = df.astype({
             'Season': int,
             'EpisodeNo': int
@@ -78,9 +82,13 @@ def read_imdb_metadata():
         usecols=['tconst', 'originalTitle', 'runtimeMinutes']
     )
     basics = basics[basics.tconst.isin(epi_ids)]
+    # Gather all episode summary and keyword data
+    print('\t Gathering Episode Descriptions, Summaries, and Keywords...')
+    summaries = pd.read_csv(data_constants.IMDB_SUMMARIES)
     # Join subsets together & convert missing values to None
     final_df = (all_eps.merge(ratings, on=['tconst'])
         .merge(basics, on=['tconst'])
+        .merge(summaries, on=['tconst'])
         .replace('\\N', None)
     )
     final_df = final_df.astype({
@@ -107,7 +115,8 @@ def read_imdb_metadata():
 
     final_df = final_df[
         ['tconst', 'originalTitle', 'Season', 'EpisodeNo', 'EpiNo_Netflix',
-         'runtimeMinutes', 'numVotes', 'averageRating']]
+         'runtimeMinutes', 'numVotes', 'averageRating',
+         'Description', 'Summaries', 'keyWords']]
     final_df = final_df.astype({
             'EpiNo_Netflix': int,
             'runtimeMinutes': float,
@@ -116,14 +125,25 @@ def read_imdb_metadata():
     return final_df
 
 
-def get_final_data(merge=False):
+def get_final_data(merge=False, load_cached=False):
     """
     Collect all data sets using the above helper functions.
 
     :param merge: boolean, whether or not to merge all data.
+    :param load_cached: boolean, whether or not to load previously cached
+                        data files
     :return: 2 Dataframes (1 Metadata, 1 scripts)
             or 1 if merge==True
     """
+    # Try loading cached:
+    if load_cached:
+        try:
+            meta = pd.read_csv(data_constants.PROCESSED_METADATA)
+            scripts = pd.read_csv(data_constants.PROCESSED_SCRIPTS)
+            return meta, scripts
+        # pylint: disable=broad-except
+        except Exception:
+            print("Couldn't load cached files. Will start from scratch.")
     # The following episodes are the second part of a 2-part episode
     # that is merged for the IMDb data so they must be removed.
     kaggle_episodes_to_remove = ['S03E18', 'S04E24', 'S07E15', 'S07E22']
@@ -138,10 +158,11 @@ def get_final_data(merge=False):
     imdb_df = read_imdb_metadata()
 
     # Remove 2nd of 2-part episodes to match IMDb
-    for ep in kaggle_episodes_to_remove:
-        ep_number = int(ep[4:])
-        prev_ep = ep[:4] + f'{ep_number-1:02d}'
-        scripts.loc[scripts.SEID==ep, 'SEID'] = prev_ep
+    for epi in kaggle_episodes_to_remove:
+        ep_number = int(epi[4:])
+        prev_ep = epi[:4] + f'{ep_number-1:02d}'
+        # pylint: disable=no-member
+        scripts.loc[scripts.SEID==epi, 'SEID'] = prev_ep
 
     ep_info = ep_info[
         ~ep_info.SEID.isin(kaggle_episodes_to_remove)]
@@ -157,6 +178,7 @@ def get_final_data(merge=False):
 
     if merge:
         merged_df.drop(columns=['Season', 'EpisodeNo'], inplace=True)
+        # pylint: disable=no-member
         all_merged = scripts.merge(merged_df, on = 'SEID', how='left')
         return all_merged
 
@@ -166,6 +188,8 @@ def get_final_data(merge=False):
 if __name__ == '__main__':
     pass
 
+
+# pylint: disable=pointless-string-statement
 """
 NOTES:
 # EPISODE_LINK has 174 rows instead of 180 on wiki:
