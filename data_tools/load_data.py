@@ -495,8 +495,8 @@ def __fix_alias_mapping(data):
     data.loc[data.Character.isin(['Babu Bhatt']), 'Character'] = 'BABU'
     #     EDDIT -> EDDIE
     data.loc[data.Character.isin(['EDDIT']), 'Character'] = 'EDDIE'
-    #     GUAD -> GUARD
-    data.loc[data.Character.isin(['GUAD']), 'Character'] = 'GUARD'
+    #     GUAD, GAURD -> GUARD
+    data.loc[data.Character.isin(['GUAD', 'GAURD']), 'Character'] = 'GUARD'
     #     MR.THOMASSOULO,MR. THOMASSOULO -> THOMASSOULO
     data.loc[data.Character.isin(['MR.THOMASSOULO', 'MR. THOMASSOULO']),
              'Character'] = 'THOMASSOULO'
@@ -512,8 +512,8 @@ def __fix_alias_mapping(data):
              'Character'] = 'STEINBRENNER'
     #     TVVOICE, TV VOICE, TV ANNOUNCER, TV NEWSCASTER -> TV
     data.loc[data.Character.isin(
-        ['TVVOICE', 'TV VOICE', 'TV ANNOUNCER', 'TV NEWSCASTER']),
-             'Character'] = 'TV'
+        ['TVVOICE', 'TV VOICE', 'TV ANNOUNCER',
+         'TV NEWSCASTER', 'ANNOUNCER ON TV']), 'Character'] = 'TV'
     #     WOMANEWMAN -> WOMAN
     data.loc[data.Character.isin(['WOMANEWMAN']), 'Character'] = 'WOMAN'
     #     MORGANEWMAN, MORGAN-> MR. MORGAN
@@ -530,10 +530,35 @@ def __fix_alias_mapping(data):
     data.loc[data.Character.isin(
         ["ANSWERING MACHINE", "JERRY'S MACHINE", 'MACHINE']),
              'Character'] = "JERRY'S ANSWERING MACHINE"
+    # 'IZZY IZZY SR..' -> 'IZZY SR.'
+    data.loc[data.Character.isin(['IZZY IZZY SR..']),
+             'Character'] = 'IZZY SR.'
+    # 'IZZY & IZZY JR & IZZY IZZY SR. -> IZZY & IZZY JR. & IZZY SR.
+    data.loc[data.Character.isin(['IZZY & IZZY JR & IZZY IZZY SR.']),
+             'Character'] = 'IZZY & IZZY JR. & IZZY SR.'
+    #     CLAIE -> CLAIRE (WAITRESS)
+    data.loc[data.Character.isin(['CLAIE']), 'Character'] = 'CLAIRE'
 
     # Check that all characters are capitalized
     data.Character = data.Character.str.upper()
 
+    #     BENES, ALTON -> ALTON BENES (ELAINE's Dad)
+    data.loc[data.Character.isin(['BENES', 'ALTON']),
+             'Character'] = 'ALTON BENES'
+    #     MARRY, MAR -> MARY
+    data.loc[data.Character.isin(['MARRY', 'MAR']), 'Character'] = 'MARY'
+    #     SPONSER, SPONER -> SPONSOR
+    data.loc[data.Character.isin(['SPONSER', 'SPONER']),
+             'Character'] = 'SPONSOR'
+    #     SLIPPERT PETE -> SPLIPPERY PETE
+    data.loc[data.Character.isin(['SLIPPERT PETE']),
+             'Character'] = 'SLIPPERY PETE'
+    #     DRY CLEANE -> DRY CLEANER
+    data.loc[data.Character.isin(['DRY CLEANE']),
+             'Character'] = 'DRY CLEANER'
+    #     AENT -> AGENT
+    data.loc[data.Character.isin(['AENT']),
+             'Character'] = 'AGENT'
     # standardize CHAR's mind, CHAR's VOICE, thinking, etc.
     #     check with data[data.Character.str.contains("'S")]
     #     ELAINE
