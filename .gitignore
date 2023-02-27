@@ -5,7 +5,6 @@
 # PyCharm
 .idea/
 
-
 # Python
 .ipynb_checkpoints
 *.ipynb_checkpoints
