@@ -1,10 +1,9 @@
 # Data Files
-*.csv
+# *.csv
 *.zip
 
 # PyCharm
 .idea/
-
 
 # Python
 .ipynb_checkpoints
