@@ -9,9 +9,13 @@ dependencies:
   - numpy>=1.2
   - pandas>=1.4
   - scikit-learn>=1.2
+  - matplotlib>=3.5
+  - plotly>=5
+  - beautifulsoup4>=4.10
   - pip
   - pip:
      - text2emotion
      - emoji==1.7
      - fuzzywuzzy
      - nltk
+     - tqdm
