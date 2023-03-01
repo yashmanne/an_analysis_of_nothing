@@ -3,12 +3,12 @@ channels:
   - defaults
   - conda-forge
 dependencies:
-  - python>=3.7
+  - python >=3.9, <4.0
   - jupyter
-  - streamlit==1.18
-  - numpy
-  - pandas
-  - scikit-learn
+  - streamlit=1.18
+  - numpy>=1.2
+  - pandas>=1.4
+  - scikit-learn>=1.2
   - pip
   - pip:
      - text2emotion
