@@ -1,5 +1,5 @@
 """
-Contains functions to scrape addititional information from each
+Contains functions to scrape additional information from each
 episode's IMDb page. Specifically, the code will extract:
     * Episode Descriptions
     * Episode Summaries
@@ -19,7 +19,7 @@ def scrape_data():
     """
     This function scrapes episode descriptions, user-generated plot
     summaries, and user-generated plot keywords from the IMDb pages
-    of each episoode.
+    of each episode.
 
     :return: Pandas Data Frame
     """
