@@ -468,9 +468,9 @@ def __fix_alias_mapping(data):
     #     Hx, JERR, JERY -> JERRY
     data.loc[data.Character.isin(['Hx', 'JERR', 'JERY']),
              'Character'] = 'JERRY'
-    #     Ex, ELANE, ELIANE, EALINE, ElainELAINE -> ELAINE
+    #     Ex, ELANE, ELAIEN, ELIANE, EALINE, ElainELAINE -> ELAINE
     data.loc[data.Character.isin(
-        ['Ex', 'ELANE', 'ELIANE', 'EALINE', 'ElainELAINE']),
+        ['Ex', 'ELANE', 'ELAIEN', 'ELIANE', 'EALINE', 'ElainELAINE']),
              'Character'] = 'ELAINE'
     #     GX, GEOGE, GEROGE, GOERGE -> GEORGE
     data.loc[data.Character.isin(['GX', 'GEOGE', 'GOERGE', 'GEROGE']),
