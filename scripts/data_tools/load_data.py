@@ -601,7 +601,7 @@ def __fix_alias_mapping(data):
 
 if __name__ == '__main__':
     cwd = sys.argv[1]
-    base_path = cwd.split("an_analysis_of_nothing/", maxsplit=1)[0]
+    base_path = cwd.split("an_analysis_of_nothing", maxsplit=1)[0]
     data_folder = base_path + 'an_analysis_of_nothing/data/'
     meta_name = data_folder + 'metadata.csv'
     script_name = data_folder + 'scripts.csv'
