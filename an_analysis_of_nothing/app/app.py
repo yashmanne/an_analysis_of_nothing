@@ -9,10 +9,8 @@ st.set_page_config(layout="wide")
 try:
     # Load dataframes into session state once
     if "df_imdb" not in st.session_state or "df_script" not in st.session_state:
-        # st.session_state.df_imdb = pd.read_csv('./data/imdb.csv')
         st.session_state.df_imdb, st.session_state.df_script = util.get_final_data()
-    # if "df_script" not in st.session_state:
-        # st.session_state.df_script = pd.read_csv('./data/scripts_emo2.csv')
+
     col1_1, col1_2 = st.columns(2)
     with col1_1:
         st.markdown(
