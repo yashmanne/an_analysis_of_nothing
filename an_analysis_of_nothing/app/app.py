@@ -4,16 +4,15 @@ import plotly.express as px
 import plotly.graph_objects as go
 import util
 
-
 st.set_page_config(layout="wide")
 # Intro text and image
 try:
     # Load dataframes into session state once
-    if "df_imdb" not in st.session_state:
-        st.session_state.df_imdb = pd.read_csv('./data/imdb.csv')
-    if "df_script" not in st.session_state:
-        st.session_state.df_script = pd.read_csv('./data/scripts_emo2.csv')
-
+    if "df_imdb" not in st.session_state or "df_script" not in st.session_state:
+        # st.session_state.df_imdb = pd.read_csv('./data/imdb.csv')
+        st.session_state.df_imdb, st.session_state.df_script = util.get_final_data()
+    # if "df_script" not in st.session_state:
+        # st.session_state.df_script = pd.read_csv('./data/scripts_emo2.csv')
     col1_1, col1_2 = st.columns(2)
     with col1_1:
         st.markdown(
@@ -27,7 +26,7 @@ try:
 
     # Seinfeld image
     with col1_2:
-        st.image('./static/images/cast.png')  # use_column_width=True)
+        st.image('./an_analysis_of_nothing/app/static/images/cast.png')
 except Exception as e:
     st.error("There was an issue loading data")
 
@@ -79,18 +78,16 @@ try:
 
         # TODO: Make this more efficient by extracting out new columns into original csv
         # TODO: Display weighted sum (i.e. rather than argmax take )
-        selected[['Happy', 'Angry', 'Surprise', 'Sad', 'Fear']
-                 ] = selected.apply(util.extract_emotions, axis=1)
-        selected['Count'] = 1
+        selected.loc[:,'Count'] = 1
         selected['Argmax'] = selected.apply(util.extract_argmax, axis=1)
         grouped_df = selected[['Happy', 'Angry', 'Surprise',
                                'Sad', 'Fear', 'SEID']].groupby('SEID').sum()
         grouped_df = grouped_df.reset_index()
         # Melt the DataFrame to create a long format
         melted_df = grouped_df.melt(
-            id_vars='SEID', var_name='Emotion', value_name='sum')
+            id_vars='SEID', var_name='Emotion', value_name='Sum')
 
-        fig = px.bar(melted_df, x='sum', y='Emotion',
+        fig = px.bar(melted_df, x='Sum', y='Emotion',
                      color='SEID', orientation='h')
 
         fig.update_layout(
