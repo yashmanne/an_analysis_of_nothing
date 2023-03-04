@@ -5,6 +5,20 @@ Contains functions that count/modify original data.
 import pandas as pd
 from collections import OrderedDict
 
+from . import data_constants
+
+
+def load_data():
+    """
+    Load cleaned scripts and metadata from Google Drive.
+
+    :return: 2 Dataframes (1 Metadata, 1 scripts)
+        or 1 if merge==True
+    """
+    metadata = pd.read_csv(data_constants.EPISODE_LINK)
+    scripts = pd.read_csv(data_constants.SCRIPTS_LINK)
+    return metadata, scripts
+
 
 def get_line_counts(data):
     """
