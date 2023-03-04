@@ -1,5 +1,7 @@
 """
 Script to download cleaned data into analysis_of_nothing/data/
+Prerequisite: Activate seinfeld environment with:
+    conda activate seinfeld
 """
 import os
 import pandas as pd

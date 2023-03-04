@@ -31,7 +31,7 @@ import sys
 import pandas as pd
 
 from . import data_constants
-
+# change to import data_constants if running this file.
 
 def read_scripts():
     """
