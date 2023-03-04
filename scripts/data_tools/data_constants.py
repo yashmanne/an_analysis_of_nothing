@@ -1,8 +1,8 @@
 """
 Define default links for various data sources.
 
-scripts.csv: Each character's dialouge for all episodes.
-episode_info.csv: Metedata about each episode
+scripts.csv: Each character's dialogue for all episodes.
+episode_info.csv: Metadata about each episode
 
 Resources:
 https://stackoverflow.com/questions/56611698/pandas-how-to-read-csv-file-from-google-drive-public
