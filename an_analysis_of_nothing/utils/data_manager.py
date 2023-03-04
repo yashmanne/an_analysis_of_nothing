@@ -36,7 +36,7 @@ def get_line_counts(data):
     # all characters
     list_chars = data.Character.str.split(" & ").to_list()
     line_counts = {}
-    # count each character's apperance
+    # count each character's appearance
     for char_list in list_chars:
         for char in char_list:
             line_counts[char.strip()] = line_counts.get(char.strip(), 0) + 1
