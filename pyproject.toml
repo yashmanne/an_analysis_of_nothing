@@ -1,0 +1,29 @@
+[project]
+name = "an_analysis_of_nothing"
+version = "0.0.1"
+authors = [
+  { name="Yash Manne", email="ymanne@uw.edu" },
+  { name="Yamina Katariya", email="yamkat@uw.edu" },
+  { name="Chandler Ault", email="cjault@uw.edu" },
+  { name="Aditi Shrivastava", email="adts@uw.edu" }
+]
+description = "Tool for episode querying, episode recommendation, and visualization of a show about nothing."
+readme = "README.md"
+requires-python = ">=3.9, <4.0"
+dependencies = [
+    "streamlit=1.18",
+    "numpy>=1.2",
+    "pandas>=1.4",
+    "scikit-learn>=1.2",
+    "plotly>=5",
+    "nltk",
+    "tqdm"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/yashmanne/an_analysis_of_nothing/"
