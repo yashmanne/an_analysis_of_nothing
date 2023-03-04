@@ -11,6 +11,8 @@ from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
 
 
+
+
 def extract_argmax(row: pd.Series) -> str:
     """
     Extract the maximum emotion from a row of emotions as a string.
@@ -22,7 +24,7 @@ def extract_argmax(row: pd.Series) -> str:
         The key corresponding to the maximum value in the dictionary, or 'No Emotion' if all values are zero.
     """
     try:
-        emotions_dict = ast.literal_eval(row['sentiment'])
+        emotions_dict = ast.literal_eval(row['Sentiment'])
         if all(value == 0 for value in emotions_dict.values()):
             return 'No Emotion'
         else:
@@ -48,29 +50,6 @@ def getSelectedEp(df_imdb: pd.DataFrame, selected: pd.DataFrame) -> pd.DataFrame
     except Exception as e:
         st.error(str(e))
         return df_imdb
-
-
-def extract_emotions(row: pd.Series) -> pd.Series:
-    """
-    Extract individual emotions from a row of emotions as separate columns.
-
-    Args:
-        row: a Pandas Series containing emotion data in the form of a dictionary.
-
-    Returns:
-        A Pandas Series containing the individual emotion values for the row.
-    """
-    try:
-        emotions_dict = ast.literal_eval(row['sentiment'])
-        happy = emotions_dict.get('Happy', 0.0)
-        angry = emotions_dict.get('Angry', 0.0)
-        surprise = emotions_dict.get('Surprise', 0.0)
-        sad = emotions_dict.get('Sad', 0.0)
-        fear = emotions_dict.get('Fear', 0.0)
-        return pd.Series({'Happy': happy, 'Angry': angry, 'Surprise': surprise, 'Sad': sad, 'Fear': fear})
-    except Exception as e:
-        st.error(str(e))
-        return pd.Series({'Happy': 0, 'Angry': 0, 'Surprise': 0, 'Sad': 0, 'Fear': 0})
 
 
 def preprocess_text(text: str) -> str:
@@ -173,3 +152,48 @@ def get_occurrences(df_imdb, df_scripts, ids):
         st.error(str(e))
         return df_scripts
         # If an error occurs, log the error message and return the original DataFrame
+
+def read_scripts():
+    """
+    Read in `Seinfeld Chronicles` script data from Kaggle
+    as a Data Frame.
+
+    :return: Pandas Data Frame
+    """
+    gdrive_base = 'https://drive.google.com/uc?id='
+    scripts_link = 'https://drive.google.com/file/d/1Tk81NmRHY-I5ClawQF4-vHMTPqxBlKqf/view?usp=share_link'
+    scripts_link = gdrive_base + scripts_link.split('/')[-2]
+    df = pd.read_csv(scripts_link)
+    
+    return df
+
+def read_imdb():
+    """
+    Read in `Seinfeld Chronicles` script data from Kaggle
+    as a Data Frame.
+
+    :return: Pandas Data Frame
+    """
+    gdrive_base = 'https://drive.google.com/uc?id='
+    imdb = 'https://drive.google.com/file/d/1y4SyWBcj_OJc6cPsoM1q9vtifvjw3ftv/view?usp=sharing'
+    imdb = gdrive_base + imdb.split('/')[-2]
+    df = pd.read_csv(imdb)
+    return df
+
+def get_final_data(merge=False, load_cached=False):
+    """
+    Collect all data sets using the above helper functions.
+
+    :param merge: boolean, whether or not to merge all data.
+    :param load_cached: boolean, whether or not to load previously cached
+                        data files
+    :return: 2 Dataframes (1 Metadata, 1 scripts)
+            or 1 if merge==True
+    """
+    print('Gathering Script Data...')
+    scripts = read_scripts()
+    # Get Kaggle Data Metadata
+    print('Gathering IMDb Data...')
+    imdb_df = read_imdb()
+
+    return imdb_df, scripts
