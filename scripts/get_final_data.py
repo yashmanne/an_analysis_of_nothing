@@ -14,7 +14,10 @@ from sentiment_tools import sentiment
 if __name__ == "__main__":
     cwd = os.getcwd()
     base_path = cwd.split("an_analysis_of_nothing", maxsplit=1)[0]
-    data_folder = base_path + 'an_analysis_of_nothing/data/'
+    data_folder = base_path + \
+        'an_analysis_of_nothing/an_analysis_of_nothing/data/'
+    if not os.path.exists(data_folder):
+        os.mkdirs(data_folder)
     meta_name = data_folder + 'metadata.csv'
     script_name = data_folder + 'scripts.csv'
     meta, scripts = load_data.get_final_data()
