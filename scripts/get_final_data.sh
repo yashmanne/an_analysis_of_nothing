@@ -2,5 +2,5 @@
 
 cwd=$(pwd)
 echo $cwd
-python ./data_tools/load_data.py $cwd
+python ./get_final_data.py
 echo "Stored data under an_analysis_of_nothing/data/"
