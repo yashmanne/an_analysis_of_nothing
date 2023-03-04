@@ -16,8 +16,7 @@ def load_data():
     """
     meta = pd.read_csv(data_constants.EPISODE_LINK)
 
-    meta.keyWord = meta.keyWords.apply(eval)
-    meta.Description = meta.Description.apply(eval)
+    meta.keyWords = meta.keyWords.apply(eval)
     meta.Summaries = meta.Summaries.apply(eval)
 
     scripts = pd.read_csv(data_constants.SCRIPTS_LINK)
