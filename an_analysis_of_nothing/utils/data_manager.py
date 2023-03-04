@@ -12,12 +12,16 @@ def load_data():
     """
     Load cleaned scripts and metadata from Google Drive.
 
-    :return: 2 Dataframes (1 Metadata, 1 scripts)
-        or 1 if merge==True
+    :return: 2 Dataframes (1 Metadata, 1 scripts).
     """
-    metadata = pd.read_csv(data_constants.EPISODE_LINK)
+    meta = pd.read_csv(data_constants.EPISODE_LINK)
+
+    meta.keyWord = meta.keyWords.apply(eval)
+    meta.Description = meta.Description.apply(eval)
+    meta.Summaries = meta.Summaries.apply(eval)
+
     scripts = pd.read_csv(data_constants.SCRIPTS_LINK)
-    return metadata, scripts
+    return meta, scripts
 
 
 def get_line_counts(data):
@@ -32,7 +36,7 @@ def get_line_counts(data):
     # all characters
     list_chars = data.Character.str.split(" & ").to_list()
     line_counts = {}
-    # count each character's apperance
+    # count each character's appearance
     for char_list in list_chars:
         for char in char_list:
             line_counts[char.strip()] = line_counts.get(char.strip(), 0) + 1
