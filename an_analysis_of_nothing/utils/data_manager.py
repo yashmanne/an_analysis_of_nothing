@@ -12,12 +12,16 @@ def load_data():
     """
     Load cleaned scripts and metadata from Google Drive.
 
-    :return: 2 Dataframes (1 Metadata, 1 scripts)
-        or 1 if merge==True
+    :return: 2 Dataframes (1 Metadata, 1 scripts).
     """
-    metadata = pd.read_csv(data_constants.EPISODE_LINK)
+    meta = pd.read_csv(data_constants.EPISODE_LINK)
+
+    meta.keyWord = meta.keyWords.apply(eval)
+    meta.Description = meta.Description.apply(eval)
+    meta.Summaries = meta.Summaries.apply(eval)
+
     scripts = pd.read_csv(data_constants.SCRIPTS_LINK)
-    return metadata, scripts
+    return meta, scripts
 
 
 def get_line_counts(data):
