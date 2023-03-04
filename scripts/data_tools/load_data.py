@@ -1,10 +1,37 @@
 """
 Contains functions to load data from online sources.
+
+DATA CLEANING NOTES:
+# EPISODE_LINK (KAGGLE DATA) has 174 rows instead of 180 on wiki:
+# # considers S5E18-19 as 1 big episode (Raincoats) stored as E18 but no E19.
+# # Omits S6E14-15 (The Highlights of 100), which contains no new content.
+    No other E14-15 stored .
+# # Omits S9E21-22 (The Clip Show)--contains no new content. No E21-22 stored.
+# # Considers S9E23-24 (The Finale) as 1 big episode stored as E23 & no E24.
+
+# IMDB has 173 rows:
+# # Considers S3Ep17-18 (The Boyfriend) as 1 episode. Numbering after differs.
+# # Considers S4Ep23-24 (The Pilot) as 1 episode. Numbering after differs.
+# # DOES consider S5E18-19 as 1 big episode #18 (Raincoats).
+    but also puts extra entry for #19 that can can remove!
+# # DOES NOT omit S6E14-15 (The Highlights of 100). Instead stores as Ep 14.
+    Numbering after differs.
+# # Considers S7E14-15 as 1 big episode (The Cadillac) as E14.
+    Numbering after differs.
+# # Considers S7E21-22 as 1 big episode (The Bottle Deposit) as E20.
+    Numbering after differs.
+# # DOES NOT omits S9E21-22 (The Clip Show). Instead stores as E21.
+    Numbering after differs
+# # DOES consider S9E23-24 (The Finale) as 1 big episode but stores as E22.
+
+## FYI: Netflix follows IMDb numbering (after deleting 5.19) but also
+    combines S4E3-4 into 1 episode.
 """
+import sys
 import pandas as pd
 
 from . import data_constants
-
+# change to import data_constants if running this file.
 
 def read_scripts():
     """
@@ -125,25 +152,14 @@ def read_imdb_metadata():
     return final_df
 
 
-def get_final_data(merge=False, load_cached=False):
+def get_final_data(merge=False):
     """
     Collect all data sets using the above helper functions.
 
     :param merge: boolean, whether or not to merge all data.
-    :param load_cached: boolean, whether or not to load previously cached
-                        data files
     :return: 2 Dataframes (1 Metadata, 1 scripts)
             or 1 if merge==True
     """
-    # Try loading cached:
-    if load_cached:
-        try:
-            meta = pd.read_csv(data_constants.PROCESSED_METADATA)
-            scripts = pd.read_csv(data_constants.PROCESSED_SCRIPTS)
-            return meta, scripts
-        # pylint: disable=broad-except
-        except Exception:
-            print("Couldn't load cached files. Will start from scratch.")
     # The following episodes are the second part of a 2-part episode
     # that is merged for the IMDb data so they must be removed.
     kaggle_episodes_to_remove = ['S03E18', 'S04E24', 'S07E15', 'S07E22']
@@ -461,16 +477,16 @@ def __fix_alias_mapping(data):
     data.Character = data.Character.str.strip()
 
     # Replace \x92 with '
-    data.Character = data.Character.replace(r'[\x92]', "'", regex=True)
-    data.Dialogue = data.Dialogue.replace(r'[\x92]', "'", regex=True)
+    data.Character = data.Character.str.replace(r'[\x92]', "'", regex=True)
+    data.Dialogue = data.Dialogue.str.replace(r'[\x92]', "'", regex=True)
 
     # MAPPING ALIASES:
     #     Hx, JERR, JERY -> JERRY
     data.loc[data.Character.isin(['Hx', 'JERR', 'JERY']),
              'Character'] = 'JERRY'
-    #     Ex, ELANE, ELIANE, EALINE, ElainELAINE -> ELAINE
+    #     Ex, ELANE, ELAIEN, ELIANE, EALINE, ElainELAINE -> ELAINE
     data.loc[data.Character.isin(
-        ['Ex', 'ELANE', 'ELIANE', 'EALINE', 'ElainELAINE']),
+        ['Ex', 'ELANE', 'ELAIEN', 'ELIANE', 'EALINE', 'ElainELAINE']),
              'Character'] = 'ELAINE'
     #     GX, GEOGE, GEROGE, GOERGE -> GEORGE
     data.loc[data.Character.isin(['GX', 'GEOGE', 'GOERGE', 'GEROGE']),
@@ -505,6 +521,8 @@ def __fix_alias_mapping(data):
              'Character'] = 'PETERMAN'
     #     'MR. PITT' -> PITT
     data.loc[data.Character.isin(['MR. PITT']), 'Character'] = 'PITT'
+    #     'MR. LIPPMAN' -> LIPPMAN
+    data.loc[data.Character.isin(['MR. LIPPMAN']), 'Character'] = 'LIPPMAN'
     #     MR ROSS -> 'MR. ROSS'
     data.loc[data.Character.isin(['MR ROSS']), 'Character'] = 'MR. ROSS'
     #     'MR. STEINBRENNER' -> STEINBRENNER
@@ -580,31 +598,22 @@ def __fix_alias_mapping(data):
     data.loc[fix_index, 'Dialogue'] = "(MIND) " + \
                                       data.loc[fix_index, 'Dialogue']
 
+    # Remove . and #
+    data.Character = data.Character.str.replace('.', '', regex=False)
+    data.Character = data.Character.str.replace('#', '', regex=False)
+
+    # Remove White Space
+    data.Character = data.Character.str.strip()
+
     return data
 
 
 if __name__ == '__main__':
-    pass
-
-# pylint: disable=pointless-string-statement
-"""
-NOTES:
-# EPISODE_LINK has 174 rows instead of 180 on wiki:
-# # considers S5E18-19 as 1 big episode (Raincoats) stored as ep 18 but no ep 19
-# # Omits S6E14-15 (The Highlights of 100) -- contains no new content. No ep 14 or 15
-# # Omits S9E21-22 (The Clip Show) -- contains no new content. No ep 21 or 22
-# # Coniders S9E23-24 (The Finale) as 1 big episode stores as ep 23 but no ep 24/
-
-# IMDB has 173 rows:
-# # Considers S3Ep17-18 (The Boyfriend) as 1 episode. Numbering after differs
-# # Considers S4Ep23-24 (The Pilot) as 1 episode. Numbering after differs
-# # DOES consider S5E18-19 as 1 big episode #18 (Raincoats).
-# # # but also puts extra entry for #19 that can can remove!
-# #  DOES NOT omit S6E14-15 (The Highlights of 100). Instead stores as Ep 14. Numbering after differs
-# # Considers S7E14-15 as 1 big episode (The Cadillac) as ep 14. Numbering after differs
-# # Considers S7E21-22 as 1 big episode (The Bottle Deposit) as ep 20. Numbering after differs
-# # DOES NOT omits S9E21-22 (The Clip Show). Instead stores as Ep 21. Numbering after differs
-# # DOES consider S9E23-24 (The Finale) as 1 big episode but stores as ep 22.
-
-# Netflix follows IMDb numbering (after deleting 5.19) but also combines S4E3-4 into 1 episode.
-"""
+    cwd = sys.argv[1]
+    base_path = cwd.split("an_analysis_of_nothing", maxsplit=1)[0]
+    data_folder = base_path + 'an_analysis_of_nothing/data/'
+    meta_name = data_folder + 'metadata.csv'
+    script_name = data_folder + 'scripts.csv'
+    meta, scripts = get_final_data()
+    meta.to_csv(meta_name, index=False)
+    scripts.to_csv(script_name, index=False)

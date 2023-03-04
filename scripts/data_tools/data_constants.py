@@ -9,11 +9,6 @@ https://stackoverflow.com/questions/56611698/pandas-how-to-read-csv-file-from-go
 """
 # Links to Data files
 GDRIVE_BASE = 'https://drive.google.com/uc?id='
-# Cached on 2/19/23
-# pylint: disable=line-too-long
-PROCESSED_SCRIPTS = ''
-# pylint: disable=line-too-long
-PROCESSED_METADATA = ''
 
 # Kaggle: https://www.kaggle.com/datasets/thec03u5/seinfeld-chronicles
 # Scripts
