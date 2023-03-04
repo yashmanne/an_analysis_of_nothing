@@ -477,8 +477,8 @@ def __fix_alias_mapping(data):
     data.Character = data.Character.str.strip()
 
     # Replace \x92 with '
-    data.Character = data.Character.replace(r'[\x92]', "'", regex=True)
-    data.Dialogue = data.Dialogue.replace(r'[\x92]', "'", regex=True)
+    data.Character = data.Character.str.replace(r'[\x92]', "'", regex=True)
+    data.Dialogue = data.Dialogue.str.replace(r'[\x92]', "'", regex=True)
 
     # MAPPING ALIASES:
     #     Hx, JERR, JERY -> JERRY
@@ -521,6 +521,8 @@ def __fix_alias_mapping(data):
              'Character'] = 'PETERMAN'
     #     'MR. PITT' -> PITT
     data.loc[data.Character.isin(['MR. PITT']), 'Character'] = 'PITT'
+    #     'MR. LIPPMAN' -> LIPPMAN
+    data.loc[data.Character.isin(['MR. LIPPMAN']), 'Character'] = 'LIPPMAN'
     #     MR ROSS -> 'MR. ROSS'
     data.loc[data.Character.isin(['MR ROSS']), 'Character'] = 'MR. ROSS'
     #     'MR. STEINBRENNER' -> STEINBRENNER
@@ -595,6 +597,13 @@ def __fix_alias_mapping(data):
     data.loc[fix_index, 'Character'] = "JERRY"
     data.loc[fix_index, 'Dialogue'] = "(MIND) " + \
                                       data.loc[fix_index, 'Dialogue']
+
+    # Remove . and #
+    data.Character = data.Character.str.replace('.', '', regex=False)
+    data.Character = data.Character.str.replace('#', '', regex=False)
+
+    # Remove White Space
+    data.Character = data.Character.str.strip()
 
     return data
 
