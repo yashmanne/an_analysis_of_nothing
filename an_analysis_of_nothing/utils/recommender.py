@@ -9,6 +9,7 @@ from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
 
+from . import data_manager
 
 class Recommender:
     """
@@ -24,7 +25,8 @@ class Recommender:
         :param scripts: DataFrame with dialogue data.
             MUST contain these columns:
         :param weights: np.array, relative importance of
-            [dialogues, keywords, first summary, average rating, numVotes].
+            [dialogues, keywords, first summary, average rating,
+            numVotes, emotions, number of lines].
 
         :return: None
         """
@@ -32,8 +34,17 @@ class Recommender:
         self.scripts = scripts
         self.model = SentenceTransformer(
             'sentence-transformers/all-MiniLM-L6-v2')
-        self.weights = weights if weights else [1, 1, 0.8, 0.5, 0.2]
-        self.vectors = self._generate_vectors()
+        self.default = weights if weights else [1, 1, 0.8, 0.5, 0.2, 0.2, 0.4]
+        self.weights = self.default
+        self.vector_list = self._generate_vectors()
+        # self.vectors = None
+
+    @property
+    def vectors(self):
+        all_features = [self.vector_list[i] * w
+                        for i, w in enumerate(self.weights)]
+        final_features = np.hstack(all_features)
+        return final_features
 
     def _create_query_vector(self, title_list):
         """
@@ -80,13 +91,27 @@ class Recommender:
         num_votes = (MinMaxScaler().fit_transform(
             self.meta.numVotes.values.reshape(-1, 1)) - 0.5) / 5
 
-        # scale weights
-        all_features = [dialog_vectors, keyword_vectors,
-                        summary_vectors, ratings, num_votes]
-        all_features = [all_features[i] * w for i, w in enumerate(self.weights)]
+        # scale emotions to -0.1, 0.1
+        emotions = self.scripts.groupby(by='SEID')[
+            ['Happy', 'Angry',
+             'Surprise', 'Sad', 'Fear']].apply(np.mean, axis=0).values
+        emotions = (MinMaxScaler().fit_transform(emotions) - 0.5) / 5
 
-        final_features = np.hstack(all_features)
-        return final_features
+        # scale line_counts to -0.1, 0.1:
+        track_chars = [key for key, value
+                       in data_manager.get_line_counts(self.scripts).items()
+                       if value > 100]
+        track_chars.remove("SETTING")
+        track_chars.remove("MAN")
+        track_chars.remove("WOMAN")
+        char_counts = pd.DataFrame(data_manager.get_line_counts_per_episode(
+            self.scripts, track_chars)).values
+        char_counts = (MinMaxScaler().fit_transform(char_counts) - 0.5) / 5
+
+        # scale weights
+        all_features = [dialog_vectors, keyword_vectors, summary_vectors,
+                        ratings, num_votes, emotions, char_counts]
+        return all_features
 
     def find_closest_episodes(self, n, title_list):
         """
@@ -105,3 +130,9 @@ class Recommender:
         closest_episode_ids = ranked_ids[:n]
         ranked_episodes = self.meta.iloc[closest_episode_ids]
         return ranked_episodes
+
+    def reset_weights(self):
+        """
+        Reset weights back to default value.
+        """
+        self.weights = self.default
