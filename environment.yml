@@ -21,3 +21,4 @@ dependencies:
      - nltk
      - tqdm
      - sentence_transformers
+     - streamlit-option-menu
