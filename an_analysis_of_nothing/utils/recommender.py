@@ -18,7 +18,7 @@ class Recommender:
     def __init__(self, meta, scripts, weights=None):
         """
         Initialize recommender with model, data, and feature vectors.
-
+        Note: Takes 1 MIN to initialize
         :param meta: DataFrame with metadata.
             MUST contain these columns:
         :param scripts: DataFrame with dialogue data.
@@ -94,13 +94,14 @@ class Recommender:
         :param title_list: list of strings for each episode name.
                         MUST match episode titles from metadata.csv.
 
-        :return: list of episode indices ranked by closeness.
+        :return: DataFrame of episode ranked by closeness.
         """
         ids, query_vector = self._create_query_vector(title_list)
         scores = -cosine_similarity(query_vector, self.vectors)
-        ranked_episodes = list(scores.mean(axis=0).argsort())
+        ranked_ids = list(scores.mean(axis=0).argsort())
         for i in ids:
-            ranked_episodes.remove(i)
+            ranked_ids.remove(i)
 
-        closest_episode_ids = ranked_episodes[:n]
-        return closest_episode_ids
+        closest_episode_ids = ranked_ids[:n]
+        ranked_episodes = self.meta.iloc[closest_episode_ids]
+        return ranked_episodes
