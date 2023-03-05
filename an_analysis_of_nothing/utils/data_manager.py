@@ -27,7 +27,7 @@ def get_line_counts(data):
     """
     Get line counts for each character in the data.
 
-    :param: data: Pandas DataFrame containing at least these columns:
+    :param data: Pandas DataFrame containing at least these columns:
                  'Character', 'Dialogue', 'SEID' representing the script data.
                  RAISE VALUE ERROR ELSE
     :return: number of lines dialogue for each unique characters

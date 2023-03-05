@@ -15,6 +15,7 @@ import requests
 
 from . import data_constants
 
+
 def scrape_data():
     """
     This function scrapes episode descriptions, user-generated plot
