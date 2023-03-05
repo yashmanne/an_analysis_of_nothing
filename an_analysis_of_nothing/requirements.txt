@@ -5,3 +5,4 @@ fuzzywuzzy
 nltk
 scikit-learn
 numpy
+sentence-transformers
