@@ -17,7 +17,8 @@ dependencies = [
     "scikit-learn>=1.2",
     "plotly>=5",
     "nltk",
-    "tqdm"
+    "tqdm",
+    "sentence-transformers"
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

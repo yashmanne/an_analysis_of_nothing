@@ -20,3 +20,4 @@ dependencies:
      - fuzzywuzzy
      - nltk
      - tqdm
+     - sentence_transformers
