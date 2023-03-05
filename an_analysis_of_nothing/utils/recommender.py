@@ -11,6 +11,7 @@ from sklearn.preprocessing import MinMaxScaler
 
 from . import data_manager
 
+
 class Recommender:
     """
     Class to encapsulate recommendation features.
@@ -41,6 +42,10 @@ class Recommender:
 
     @property
     def vectors(self):
+        """
+        Using property to dynamically update vectors
+        whenever self.weights is updated.
+        """
         all_features = [self.vector_list[i] * w
                         for i, w in enumerate(self.weights)]
         final_features = np.hstack(all_features)
@@ -76,7 +81,7 @@ class Recommender:
         # each keyword_vector is a unit_norm    9s
         # average feature min, max is -0.12, 0.12
         keyword_vectors = self.model.encode(
-            self.meta.keyWords.apply(lambda x: " ".join(x)).to_list())
+            self.meta.keyWords.apply(" ".join).to_list())
 
         # each summary_vector is a unit_norm    19s
         # average feature min, max is -0.09, 0.09
@@ -113,9 +118,9 @@ class Recommender:
                         ratings, num_votes, emotions, char_counts]
         return all_features
 
-    def find_closest_episodes(self, n, title_list):
+    def find_closest_episodes(self, num_episodes, title_list):
         """
-        :param n: number of episodes to return
+        :param num_episodes: number of episodes to return
         :param title_list: list of strings for each episode name.
                         MUST match episode titles from metadata.csv.
 
@@ -127,7 +132,7 @@ class Recommender:
         for i in ids:
             ranked_ids.remove(i)
 
-        closest_episode_ids = ranked_ids[:n]
+        closest_episode_ids = ranked_ids[:num_episodes]
         ranked_episodes = self.meta.iloc[closest_episode_ids]
         return ranked_episodes
 

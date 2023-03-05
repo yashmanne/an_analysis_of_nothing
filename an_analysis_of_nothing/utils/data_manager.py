@@ -1,9 +1,9 @@
 """
 Contains functions that count/modify original data.
 """
+from collections import OrderedDict
 import numpy as np
 import pandas as pd
-from collections import OrderedDict
 
 from . import data_constants
 
@@ -79,4 +79,3 @@ def get_line_counts_per_episode(scripts, characters=None):
                 line_counts[char.strip()][seid_id] += 1
 
     return line_counts
-
