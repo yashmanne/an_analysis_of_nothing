@@ -131,16 +131,17 @@ def get_characters(df_imdb, df_script, char_choice):
         contain dialogue by the selected character(s).
     
     """
-    char_list = df_script.groupby('SEID')['Character'].apply(list)
+#     char_list = df_script.groupby('SEID')['Character'].apply(list)
     
-    df_imdb = df_imdb.sort_values('SEID')
-    df_char = pd.DataFrame(char_list).reset_index()
-    df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
-    df_imdb['char_list'] = df_char['Character']
-    df_imdb = df_imdb.dropna()
+#     df_imdb = df_imdb.sort_values('SEID')
+#     df_char = pd.DataFrame(char_list).reset_index()
+#     df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
+#     df_imdb['char_list'] = df_char['Character']
+#     df_imdb = df_imdb.dropna()
 
-    df_imdb['char_check'] = df_imdb.char_list.apply(lambda x: all(char in x for char in char_choice))
-    return df_imdb[df_imdb.char_check == True]
+#     df_imdb['char_check'] = df_imdb.char_list.apply(lambda x: all(char in x for char in char_choice))
+#     return df_imdb[df_imdb.char_check == True]
+    return df_imdb
     
     
 def get_seasons(df_imdb, season_choice):
