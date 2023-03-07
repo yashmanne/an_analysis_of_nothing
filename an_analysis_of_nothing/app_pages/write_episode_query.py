@@ -113,72 +113,72 @@ def main():
 
         # Filter data according to user input
         if season_choice and rating_choice and char_choice:
-            filtered_df = util.get_characters(df_imdb, 
+            filtered_df = episode_query.get_characters(df_imdb, 
                                       df_script, 
                                       char_choice) 
-            filtered_df = util.get_ratings(filtered_df, 
+            filtered_df = episode_query.get_ratings(filtered_df, 
                                            rating_choice)
-            filtered_df = util.get_seasons(filtered_df, 
+            filtered_df = episode_query.get_seasons(filtered_df, 
                                            season_choice)  
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
 
         elif season_choice and rating_choice == None and char_choice == None:        
-            filtered_df = util.get_seasons(df_imdb, 
+            filtered_df = episode_query.get_seasons(df_imdb, 
                                            season_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
 
         elif season_choice == None and rating_choice and char_choice == None:        
-            filtered_df = util.get_ratings(df_imdb, 
+            filtered_df = episode_query.get_ratings(df_imdb, 
                                            rating_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
 
         elif season_choice == None and rating_choice == None and char_choice:        
-            filtered_df = util.get_characters(df_imdb, 
+            filtered_df = episode_query.get_characters(df_imdb, 
                                               df_script,
                                                char_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
 
         elif season_choice == None and rating_choice and char_choice:     
-            filtered_df = util.get_characters(df_imdb, 
+            filtered_df = episode_query.get_characters(df_imdb, 
                                               df_script,
                                               char_choice)
-            filtered_df = util.get_ratings(filtered_df, 
+            filtered_df = episode_query.get_ratings(filtered_df, 
                                             rating_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
 
         elif season_choice and rating_choice == None and char_choice:        
-            filtered_df = util.get_seasons(df_imdb, 
+            filtered_df = episode_query.get_seasons(df_imdb, 
                                             season_choice)
-            filtered_df = util.get_characters(filtered_df, 
+            filtered_df = episode_query.get_characters(filtered_df, 
                                               df_script,
                                               char_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
         elif season_choice and rating_choice and char_choice == None:        
-            filtered_df = util.get_ratings(df_imdb, 
+            filtered_df = episode_query.get_ratings(df_imdb, 
                                             rating_choice)
-            filtered_df = util.get_seasons(filtered_df, 
+            filtered_df = episode_query.get_seasons(filtered_df, 
                                               season_choice)
-            search_results = util.query_episodes(filtered_df, 
+            search_results = episode_query.query_episodes(filtered_df, 
                                                  search_string)
         else:
             filtered_df = df_imdb
-            search_results = util.query_episodes(df_imdb, 
+            search_results = episode_query.query_episodes(df_imdb, 
                                                  search_string)
 
         col2_1, col2_2, _, col2_3 = st.columns([4, .5, .5, 2.5])
         with col2_1:
             if search_string:
-                response = util.get_selected_row(search_results)
+                response = episode_query.get_selected_row(search_results)
             else:
                 search_results = filtered_df.sort_values(
                     'averageRating', ascending=False).iloc[:5]
-                response = util.get_selected_row(search_results)
+                response = episode_query.get_selected_row(search_results)
 
         # Initial descriptive stats
         # Default
@@ -219,13 +219,13 @@ def main():
         )
         if len(response) != 0:
             episode = selected_imdb.Title.values[0]
-            selected = util.get_script_from_ep(
+            selected = episode_query.get_script_from_ep(
                 df_imdb, df_script, episode)
 
             selected[['Happy', 'Angry', 'Surprise', 'Sad', 'Fear']
-                     ] = selected.apply(util.extract_emotions, axis=1)
+                     ] = selected.apply(episode_query.extract_emotions, axis=1)
             selected['Count'] = 1
-            selected['Argmax'] = selected.apply(util.extract_argmax, axis=1)
+            selected['Argmax'] = selected.apply(episode_query.extract_argmax, axis=1)
             grouped_df = selected[['Happy', 'Angry', 'Surprise',
                                    'Sad', 'Fear', 'SEID']].groupby('SEID').sum()
             grouped_df = grouped_df.reset_index()
