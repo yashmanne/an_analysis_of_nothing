@@ -209,6 +209,34 @@ def get_script_from_ep(df_imdb, df_script, episode):
         # If an error occurs, log the error message and return the original DataFrame
         st.error(str(e))
         return df_script
+
+
+def extract_emotions(row):
+    """
+    Extract individual emotions from a row of emotions as separate columns.
+
+    Args:
+        row: a Pandas Series containing emotion data in the form of a dictionary.
+
+    Returns:
+        A Pandas Series containing the individual emotion values for the row.
+    """
+    try:
+        happy = row['Happy']
+        angry = row['Angry']
+        surprise = row['Surprise']
+        sad = row['Sad']
+        fear = row['Fear']
+        return pd.Series({'Happy': happy, 
+                          'Angry': angry, 
+                          'Surprise': surprise, 
+                          'Sad': sad, 
+                          'Fear': fear})
+    
+    except Exception as e:
+        # If an error occurs, log the error message and return the original DataFrame
+        st.error(str(e))
+        return pd.Series({'Happy': 0, 'Angry': 0, 'Surprise': 0, 'Sad': 0, 'Fear': 0})
     
     
 def extract_argmax(row):
@@ -223,7 +251,7 @@ def extract_argmax(row):
         or 'No Emotion' if all values are zero.
     """
     try:
-        emotions_dict = ast.literal_eval(row['sentiment'])
+        emotions_dict = dict(extract_emotions(row))
         if all(value == 0 for value in emotions_dict.values()):
             return 'No Emotion'
         else:
@@ -233,35 +261,6 @@ def extract_argmax(row):
         # If an error occurs, log the error message and return the original DataFrame
         st.error(str(e))
         return pd.Series
-
-
-def extract_emotions(row):
-    """
-    Extract individual emotions from a row of emotions as separate columns.
-
-    Args:
-        row: a Pandas Series containing emotion data in the form of a dictionary.
-
-    Returns:
-        A Pandas Series containing the individual emotion values for the row.
-    """
-    try:
-        emotions_dict = ast.literal_eval(row['sentiment'])
-        happy = emotions_dict.get('Happy', 0.0)
-        angry = emotions_dict.get('Angry', 0.0)
-        surprise = emotions_dict.get('Surprise', 0.0)
-        sad = emotions_dict.get('Sad', 0.0)
-        fear = emotions_dict.get('Fear', 0.0)
-        return pd.Series({'Happy': happy, 
-                          'Angry': angry, 
-                          'Surprise': surprise, 
-                          'Sad': sad, 
-                          'Fear': fear})
-    
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return pd.Series({'Happy': 0, 'Angry': 0, 'Surprise': 0, 'Sad': 0, 'Fear': 0})
 
 
 def preprocess_text(text):
@@ -275,8 +274,7 @@ def preprocess_text(text):
         The preprocessed text.
     """
     try:
-        if not isinstance(text, str):
-            raise TypeError('Text argument must be a string')
+        text = str(text)
 
         stop_words = ['a', 'an', 'the', 'in', 'on',
                       'at', 'to', 'of', 'for', 'and', 'or']
