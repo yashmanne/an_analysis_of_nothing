@@ -11,7 +11,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
-from utils import data_manager
+from utils import data_manager, recommender
 
 def main():
     """
@@ -44,7 +44,16 @@ def main():
     except FileNotFoundError:
         st.error("There was an issue loading data")
 
+    imdb_df = pd.DataFrame(st.session_state.df_imdb)
     dialog_df = pd.DataFrame(st.session_state.df_dialog)
+
+    try:
+        # Load recommender into session state once
+        if "recommender" not in st.session_state:
+            st.session_state.recommender = recommender.Recommender(
+                imdb_df, dialog_df)
+    except ValueError:
+        st.error("Failed to instantiate class.")
 
     seasons = st.multiselect(
         'Select Season(s)',
@@ -101,7 +110,6 @@ def main():
                 Average Episode Rating</h5>""",
                 unsafe_allow_html=True)
 
-    imdb_df = pd.DataFrame(st.session_state.df_imdb)
 
     chosen_seasons = np.in1d(imdb_df["Season"], seasons)
     imdb_season_df = imdb_df[chosen_seasons]

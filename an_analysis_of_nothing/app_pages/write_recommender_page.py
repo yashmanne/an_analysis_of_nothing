@@ -63,18 +63,8 @@ def main():
     with left_4 and right_4:
         pass
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
-                Check box to enter and uncheck to reset:</h6>""",
-                unsafe_allow_html=True)
-
-    ready = st.checkbox(
-        label="Ready!"
-        )
-
-    if ready:
-        with st.spinner("Loading your episodes..."):
-            recs = recommender.Recommender(imdb_df_rec,scripts_df_rec)
-            ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
+    recs = st.session_state.recommender
+    ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
                                                     title_list=title)
-            st.dataframe(ranked_ep[["Title", "Season", "EpisodeNo"]],
+    st.dataframe(ranked_ep[["Title", "Season", "EpisodeNo"]],
                          use_container_width=True)
