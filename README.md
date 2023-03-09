@@ -1,6 +1,8 @@
 # An Analysis of Nothing
 ---
 
+[![Coverage Status](https://coveralls.io/repos/github/yashmanne/an_analysis_of_nothing/badge.svg?branch=qa_branch)](https://coveralls.io/github/yashmanne/an_analysis_of_nothing?branch=qa_branch)
+
 ## Project Goal:
 <!-- * We aim to build a web application/dashboard that allows users to explore the occurence -->
 * We aim to build a web application/dashboardfor Seinfeld fans to explore and query dialogue snippets, identify correlations between character appearances and audience ratings, and chronicle appearances of various characters across the series.
