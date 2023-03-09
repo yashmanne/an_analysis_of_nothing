@@ -1,7 +1,7 @@
 # An Analysis of Nothing
 ---
 
-[![Coverage Status](https://coveralls.io/repos/github/yashmanne/an_analysis_of_nothing/badge.svg?branch=main)](https://coveralls.io/github/yashmanne/an_analysis_of_nothing?branch=main)
+[![Coverage Status](https://coveralls.io/repos/github/yashmanne/an_analysis_of_nothing/badge.svg?branch=qa_branch)](https://coveralls.io/github/yashmanne/an_analysis_of_nothing?branch=qa_branch)
 
 ## Project Goal:
 <!-- * We aim to build a web application/dashboard that allows users to explore the occurence -->
