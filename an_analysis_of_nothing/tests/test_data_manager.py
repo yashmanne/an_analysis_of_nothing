@@ -2,6 +2,8 @@ import unittest
 from utils import data_manager
 import pandas as pd
 from unittest.mock import patch, MagicMock
+from collections import OrderedDict
+
 
 def mocked_read_csv(*args, **kwargs):
         data_imdb_raw = [
@@ -60,15 +62,27 @@ class TestDataProcessor(unittest.TestCase):
         imdb, script = data_manager.load_data()
         self.assertIsInstance(imdb, pd.DataFrame)
         self.assertIsInstance(script, pd.DataFrame)
-        # self.assertEqual(len(imdb), 1)
+        self.assertEqual(len(imdb), 1)
         self.assertEqual(len(script), 5)
         self.assertIsInstance(imdb['Summaries'].iloc[0], list)
+        self.assertIsInstance(imdb['keyWords'].iloc[0], list)
 
 
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_line_counts(self, mock):
+        # mock.return_value = self.mock_imdb_data
+        _, script = data_manager.load_data()
+        counts = data_manager.get_line_counts(script)
+        self.assertIsInstance(counts, OrderedDict)
+        chars = counts.keys()
+        self.assertIn('JERRY', counts)
+        self.assertIn('George', counts)
+        self.assertEqual(counts['JERRY'], 3)
+        self.assertEqual(counts['George'], 2)
     # def test_get_line_counts(self):
     #     counts = data_manager.get_line_counts(self.mock_scripts)
     #     self.assertIsInstance(counts, dict)
-    #     self.assertIn('JERRY', counts)
+    #     
     #     self.assertEqual(counts['JERRY'], 14753)
 
     # def test_get_line_counts_per_episode(self):
