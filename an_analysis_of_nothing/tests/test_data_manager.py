@@ -75,10 +75,11 @@ class TestDataProcessor(unittest.TestCase):
         counts = data_manager.get_line_counts(script)
         self.assertIsInstance(counts, OrderedDict)
         chars = counts.keys()
+        print(counts)
         self.assertIn('JERRY', counts)
-        self.assertIn('George', counts)
+        self.assertIn('GEORGE', counts)
         self.assertEqual(counts['JERRY'], 3)
-        self.assertEqual(counts['George'], 2)
+        self.assertEqual(counts['GEORGE'], 2)
     # def test_get_line_counts(self):
     #     counts = data_manager.get_line_counts(self.mock_scripts)
     #     self.assertIsInstance(counts, dict)
