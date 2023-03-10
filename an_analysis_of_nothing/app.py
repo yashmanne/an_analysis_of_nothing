@@ -11,6 +11,8 @@ from streamlit_option_menu import option_menu
 from app_pages import write_home_page
 from app_pages import write_recommender_page
 from app_pages import write_about_page
+from app_pages import write_episode_query
+
 
 import os
 
@@ -25,7 +27,7 @@ st.set_page_config(layout="centered")
 
 st.markdown("""<style>
             [data-testid="stAppViewContainer"] > .main {
-                background-color: black
+                background-color: grey
             }
             [data-testid="stHeader"] {
                 background: rgba(0,0,0,0)
@@ -59,7 +61,7 @@ if selected == "Episode Recommender":
     write_recommender_page.main()
 
 if selected == "Query Episodes":
-    st.title("hey girl")
+    write_episode_query.main()
 
 if selected == "About Us":
     write_about_page.main()
