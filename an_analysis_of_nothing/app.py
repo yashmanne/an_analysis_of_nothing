@@ -4,6 +4,7 @@ and calls each subpage to be run when selected.
 
 This script requires Streamlit to be installed.
 """
+import os
 
 import streamlit as st
 from streamlit_option_menu import option_menu
@@ -12,9 +13,6 @@ from app_pages import write_home_page
 from app_pages import write_recommender_page
 from app_pages import write_about_page
 from app_pages import write_episode_query
-
-
-import os
 
 cwd = os.getcwd()
 base_path = cwd.split("an_analysis_of_nothing", maxsplit=1)[0]
@@ -27,15 +25,29 @@ st.set_page_config(layout="centered")
 
 st.markdown("""<style>
             [data-testid="stAppViewContainer"] > .main {
-                background-color: grey
-            }
-            [data-testid="stHeader"] {
-                background: rgba(0,0,0,0)
+                background-image: url("https://www.pixelstalk.net/wp-content/uploads/images1/Free-download-central-park-backgrounds.jpg");
+                background-position: center;
             }
             [data-testid="stSidebar"] {
-                background-color: #3580BB;
+                background-color: #93ACC7;
             }
             [data-testid="stMarkdownContainer"] {
+                color: white;
+            }
+            [data-testid="stVerticalBlock"] {
+                background-color: #93ACC7;
+            }
+            div.stButton > button:first-child{
+                background-color: navy;
+                color: white;
+                border: 2px solid #93ACC7;
+            }
+            div.stButton > button:focus{
+                background-color: grey;
+                color: white;
+                border: 2px solid #93ACC7;
+            }
+            [data-testid="stVerticalBlock"] {
                 color: white;
             }
             </style>""", unsafe_allow_html=True)
