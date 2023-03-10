@@ -15,21 +15,21 @@ def main():
     Arguments: None
     Returns: None
     """
-    st.markdown("""<h2 style='text-align: center; color: white;'><br>
-                About Us<br><br></h2>""",
+    st.markdown("""<h2 style='text-align: center; color: white;'>
+                About Us<br></h2>""",
                 unsafe_allow_html=True)
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+    st.markdown("""<h5 style='text-align: center; color: white;'><br>
                 For DATA515 Software Design for Data Scientists
                 course at the University of Washington, we created a
                 web application for Seinfeld fans to explore
                 and query dialogue snippets, identify correlations between
                 character appearances and audience ratings, and chronicle
-                appearances of various characters across the series.</h6>""",
+                appearances of various characters across the series.</h5>""",
                 unsafe_allow_html=True)
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
-                Creators:</h6>""",
+    st.markdown("""<h3 style='text-align: left; color: white;'><br>
+                Creators:</h3>""",
                 unsafe_allow_html=True)
 
     left_2, right_2 = st.columns(2)
