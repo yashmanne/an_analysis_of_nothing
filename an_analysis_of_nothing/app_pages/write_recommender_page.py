@@ -57,7 +57,7 @@ def main():
                 </i></small></p></body>""",
                 unsafe_allow_html=True)
 
-    left_4, middle_4, right_4 = st.columns(3)
+    left_4, middle_4, right_4 = st.columns([1,5,1])
     with middle_4:
         st.image('./static/images/giphy.gif')
     with left_4 and right_4:
@@ -67,14 +67,10 @@ def main():
                 Check box to enter and uncheck to reset:</h6>""",
                 unsafe_allow_html=True)
 
-    ready = st.checkbox(
-        label="Ready!"
-        )
+    recs = st.session_state.recommender
 
-    if ready:
-        with st.spinner("Loading your episodes..."):
-            recs = recommender.Recommender(imdb_df_rec,scripts_df_rec)
-            ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
-                                                    title_list=title)
-            st.dataframe(ranked_ep[["Title", "Season", "EpisodeNo"]],
-                         use_container_width=True)
+    if st.button("Hiii"):
+        ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
+                                                title_list=title)
+        st.dataframe(ranked_ep[["Title", "Season", "EpisodeNo"]],
+                            use_container_width=True)
