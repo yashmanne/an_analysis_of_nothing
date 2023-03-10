@@ -27,34 +27,25 @@ def main():
         # Load data
         df_imdb = pd.DataFrame(st.session_state.df_imdb)
         df_script = pd.DataFrame(st.session_state.df_dialog)
-        
-        # Titles, image, search bar
-        col1_1, col1_2 = st.columns([5, 1])
-        with col1_1:
-            st.markdown(
-                """
-                    An Analysis of Nothing: **Episode Querying**
-                    ## Find a Seinfeld episode
-                """
-            )
-        with col1_2:
-            st.image('./static/images/cast2.png')
-
-        st.markdown(
-                """
-                Search for specific episodes from the show by entering keywords, 
-                concepts, or topics in the search bar below. Then, view sentiment 
-                statistics for the five queried episodes.
-                """
-            )
-
-
-        col1_3, _ = st.columns([2, 4])
-        with col1_3:
-            st.image('./static/images/cast_div.png')
-
     except Exception as e:
         st.error("There was an issue loading data")
+
+    st.markdown("""<h2 style='text-align: center; color: white;'><br>
+                        Episode Querying<br><br></h2>""",
+                        unsafe_allow_html=True)
+
+    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+            Search for specific episodes from the show by entering
+            keywords, concepts, or topics in the search bar below.
+            Then, view sentiment statistics for the five queried episodes.
+            <br><br></h6>""",
+            unsafe_allow_html=True)
+    
+    left_5, middle_5, right_5 = st.columns([1.65,5,1])
+    with middle_5:
+        st.image('./static/images/elaine_typing.gif')
+    with left_5 and right_5:
+        pass
 
     # Configure sidebar
     st.sidebar.markdown("## Advanced Search")
