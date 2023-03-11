@@ -137,7 +137,7 @@ def load_corpus(df_imdb, df_script):
     corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
     return corpus, corpus_embeddings, embedder
     
-def query_episodes(df_imdb, df_script, query):
+def query_episodes(df_imdb, query):
     """
     Searches a pandas DataFrame for the closest matches to a given search string.
 
