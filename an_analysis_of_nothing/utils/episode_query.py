@@ -11,42 +11,162 @@ from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
+from sentence_transformers import SentenceTransformer, util
+import torch
 
-# Search and selection tools: query_episodes, get_selected_row, map_imdb_to_scripts
-def query_episodes(df_imdb, search_string):
+# Search and selection tools: filter_search_results, query_episodes, get_selected_row, 
+                            # get_characters, get_seasons, get_ratings
+def filter_search_results(search_string, season_choice, rating_choice, char_choice, df_imdb, df_script):
+    """
+    Searches a pandas DataFrame for the closest matches to a given search string.
+
+    Args:
+        search_string (str): The user inputted string to search for. 
+        season_choice (list): The user inputted list of seasons to filter, 
+            or None if not specified.
+        rating_choice (tuple): The user inputted range of ratings to filter, 
+            or None if not specified.
+        char_choice (list): The user inputted list of characters to filter, 
+            or None if not specified.
+        df_imdb (pandas.DataFrame): The IMDb metadata DataFrame (st.session_state.df_imdb).
+        df_script (pandas.DataFrame): The scripts DataFrame (st.session_state.df_dialog).
+
+    Returns:
+        tuple: The filtered df_imdb dataframe, and the closest matches to the 
+            search string from the filtered dataframe.
+    """
+    # Manually configure every possible input i guess
+    if season_choice and rating_choice and char_choice:
+        filtered_df = get_characters(df_imdb, 
+                                     df_script, 
+                                     char_choice) 
+        filtered_df = get_ratings(filtered_df, 
+                                  rating_choice)
+        filtered_df = get_seasons(filtered_df, 
+                                  season_choice)  
+        search_results = query_episodes(filtered_df, 
+                                        df_script, 
+                                        search_string)
+        return filtered_df, search_results
+
+    elif season_choice and rating_choice == None and char_choice == None:        
+        filtered_df = get_seasons(df_imdb, 
+                                  season_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+
+    elif season_choice == None and rating_choice and char_choice == None:
+        filtered_df = get_ratings(df_imdb, 
+                                  rating_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+
+    elif season_choice == None and rating_choice == None and char_choice:        
+        filtered_df = get_characters(df_imdb, 
+                                     df_script,
+                                     char_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script, 
+                                        search_string)
+        return filtered_df, search_results
+
+    elif season_choice == None and rating_choice and char_choice:     
+        filtered_df = get_characters(df_imdb, 
+                                     df_script, 
+                                     char_choice)
+        filtered_df = get_ratings(filtered_df, 
+                                  rating_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+
+    elif season_choice and rating_choice == None and char_choice:        
+        filtered_df = get_seasons(df_imdb, 
+                                  season_choice)
+        filtered_df = get_characters(filtered_df, 
+                                     df_script, 
+                                     char_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+    
+    elif season_choice and rating_choice and char_choice == None:        
+        filtered_df = get_ratings(df_imdb, 
+                                  rating_choice)
+        filtered_df = get_seasons(filtered_df, 
+                                  season_choice)
+        search_results = query_episodes(filtered_df, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+    
+    else:
+        filtered_df = df_imdb
+        search_results = query_episodes(df_imdb, 
+                                        df_script,
+                                        search_string)
+        return filtered_df, search_results
+
+
+def load_corpus(df_imdb, df_script):
+    """
+    Load sentence transformer and encode corpus for episode querying.
+    
+    Args:
+        df_imdb (pandas.DataFrame): The corpus.
+    
+    Returns:
+        fdkfhkdsjfhds
+    """
+    df_imdb['Dialogue'] = df_imdb.Title.apply(lambda x: 
+                                                  '\n'.join(get_script_from_ep(df_imdb, 
+                                                                               df_script, 
+                                                                               x).Dialogue.values))
+    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue'] + ' '.join(x['Summaries']), axis=1)
+    embedder = SentenceTransformer('all-MiniLM-L6-v2')
+
+    # Idk which corpus will use
+    # corpus = df_script.Dialogue.values
+    corpus = df_imdb.text.values
+    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    return corpus, corpus_embeddings, embedder
+    
+def query_episodes(df_imdb, df_script, query):
     """
     Searches a pandas DataFrame for the closest matches to a given search string.
 
     Args:
         df_imdb (pandas.DataFrame): The DataFrame to search.
-        search_string (str): The string to search for.
+        query (str): The string to search for.
 
     Returns:
         pandas.DataFrame: The 5 closest matches to the search string.
     """
     try:
-        # Preprocess the text data in the DataFrame
-        df_imdb.loc[:, 'text'] = df_imdb.loc[:,
-                                             'Summaries'].apply(preprocess_text)
+        corpus, corpus_embeddings, embedder = st.session_state.query
+        df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score' : []})
+        query_embedding = embedder.encode(query, convert_to_tensor=True)
 
-        # Preprocess the search string
-        query = preprocess_text(search_string)
+        # Cosine-similarity and torch.topk for highest 5 scores
+        cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
+        top_results = torch.topk(cos_scores, k=170)
 
-        # Vectorize the text data in the DataFrame
-        vectorizer = TfidfVectorizer()
-        vectors = vectorizer.fit_transform(df_imdb['text'])
-
-        # Vectorize the search string
-        query_vector = vectorizer.transform([query])
-
-        # Calculate the cosine similarities between the search string and the text data
-        cosine_similarities = cosine_similarity(
-            query_vector, vectors).flatten()
-
-        # Get the top 5 closest matches
-        top_matches = cosine_similarities.argsort()[:-6:-1]
-
-        return df_imdb.iloc[top_matches]
+        for score, idx in zip(top_results[0], top_results[1]):
+            df = pd.concat([df, pd.Series({'Dialogue': corpus[idx], 
+                                           'Index': int(idx), 
+                                           'Score' : score}).to_frame().T], 
+                           ignore_index=True)
+        # Map to df_imdb
+        df['Title'] = df.Index.apply(lambda x: df_imdb.iloc[x].Title)
+        df_imdb = df_imdb[df_imdb.Title.isin(df.head(5).Title)]
+            
+        return df_imdb
     
     except Exception as e:
         # If an error occurs, log the error message and return the original DataFrame
@@ -94,28 +214,7 @@ def get_selected_row(search_results):
         st.error(str(e))
         return response
     
-def map_imdb_to_scripts(df_imdb, df_script):
-    """
-    Create an SEID column in the IMDb dataframe that corresponds
-    to the scripts dataframe SEID column.
     
-    Args:
-        df_imdb (pandas.DataFrame): The DataFrame of IMDb data.
-        df_script (pandas.DataFrame): The DataFrame of script data.
-    
-    Returns:
-    
-    """
-    # Add columns for the season and episode numbers and the SEID
-    df_imdb['SID'] = df_imdb['Season'].apply(lambda x: '{:02d}'.format(x))
-    df_imdb['EID'] = df_imdb['EpisodeNo'].apply(
-        lambda x: '{:02d}'.format(x))
-    df_imdb['SEID'] = 'S' + df_imdb['SID'] + 'E' + df_imdb['EID']
-    
-    return df_imdb
-    
-    
-# Sidebar filter tools: get_characters, get_ratings, get_seasons, draw_sidebar
 def get_characters(df_imdb, df_script, char_choice):
     """
     Extract episodes from the IMDb containing the user inputted
@@ -131,17 +230,15 @@ def get_characters(df_imdb, df_script, char_choice):
         contain dialogue by the selected character(s).
     
     """
-#     char_list = df_script.groupby('SEID')['Character'].apply(list)
+    char_list = df_script.groupby('SEID')['Character'].apply(list)
     
-#     df_imdb = df_imdb.sort_values('SEID')
-#     df_char = pd.DataFrame(char_list).reset_index()
-#     df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
-#     df_imdb['char_list'] = df_char['Character']
-#     df_imdb = df_imdb.dropna()
-
-#     df_imdb['char_check'] = df_imdb.char_list.apply(lambda x: all(char in x for char in char_choice))
-#     return df_imdb[df_imdb.char_check == True]
-    return df_imdb
+    df_imdb = df_imdb.sort_values('SEID')
+    df_char = pd.DataFrame(char_list).reset_index()
+    df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
+    df_imdb['char_list'] = df_char['Character']
+    df_imdb = df_imdb.dropna()
+    df_imdb['char_check'] = df_imdb.char_list.apply(lambda x: all(char in x for char in char_choice))
+    return df_imdb[df_imdb.char_check == True]
     
     
 def get_seasons(df_imdb, season_choice):
@@ -193,9 +290,6 @@ def get_script_from_ep(df_imdb, df_script, episode):
     pandas.DataFrame: The DataFrame of dialogue occurrences.
     """
     try:
-        # Add columns for the season and episode numbers and the SEID
-        df_imdb = map_imdb_to_scripts(df_imdb, df_script)
-
         # Filter the IMDb data for the selected episode
         selected_episodes = df_imdb.loc[df_imdb['Title'] == episode]
 
@@ -238,7 +332,7 @@ def extract_emotions(row):
         st.error(str(e))
         return pd.Series({'Happy': 0, 'Angry': 0, 'Surprise': 0, 'Sad': 0, 'Fear': 0})
     
-    
+# Will maybe change maybe 
 def extract_argmax(row):
     """
     Extract the maximum emotion from a row of emotions as a string.
@@ -261,33 +355,3 @@ def extract_argmax(row):
         # If an error occurs, log the error message and return the original DataFrame
         st.error(str(e))
         return pd.Series
-
-
-def preprocess_text(text):
-    """
-    Preprocess text by removing numbers, punctuation, and stop words, and converting to lowercase.
-
-    Args:
-        text: a string of text to be preprocessed.
-
-    Returns:
-        The preprocessed text.
-    """
-    try:
-        text = str(text)
-
-        stop_words = ['a', 'an', 'the', 'in', 'on',
-                      'at', 'to', 'of', 'for', 'and', 'or']
-        text = re.sub(r'\d+', '', text)  # remove numbers
-        text = text.translate(str.maketrans(
-            '', '', string.punctuation))  # remove punctuation
-        text = text.lower()  # convert to lowercase
-        # remove stop words
-        text = ' '.join([word for word in text.split()
-                        if word not in stop_words])
-        return text
-    
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return ''
