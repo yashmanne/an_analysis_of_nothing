@@ -49,7 +49,7 @@ def mocked_character_read_csv(*args, **kwargs):
         elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
             return mock_script_data
 
-class TestDataProcessor(unittest.TestCase):
+class TestDataManager(unittest.TestCase):
     # Mocking pandas read_csv function
     # def mocked_read_csv(*args, **kwargs):
     #     if args[0] == 'file1.csv':
