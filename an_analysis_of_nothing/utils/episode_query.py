@@ -18,7 +18,7 @@ import torch
                             # get_characters, get_seasons, get_ratings
 def filter_search_results(search_string, season_choice, rating_choice, char_choice, df_imdb, df_script):
     """
-    Searches a pandas DataFrame for the closest matches to a given search string.
+    Adjusts the dataframe containing search query output based on user sidebar options.
 
     Args:
         search_string (str): The user inputted string to search for. 
