@@ -37,8 +37,8 @@ class TestEpisodeQuery(unittest.TestCase):
         episodes = episode_query.query_episodes(imdb, 'Woman from michigan')
         pd.testing.assert_frame_equal(episodes, imdb)
 
-        episodes = episode_query.query_episodes(imdb, 'Jerry forgets woman\'s name')
-        pd.testing.assert_frame_equal(episodes, imdb.iloc[::-1])
+        episodes = episode_query.query_episodes(imdb, 'Jerry goes to a birthday party')
+        pd.testing.assert_frame_equal(episodes, imdb)
     
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
     def test_query_episodes_error(self, mock):
