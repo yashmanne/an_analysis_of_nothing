@@ -18,7 +18,7 @@ import torch
                             # get_characters, get_seasons, get_ratings
 def filter_search_results(search_string, season_choice, rating_choice, char_choice, df_imdb, df_script):
     """
-    Adjusts the dataframe containing search query output based on user sidebar options.
+    Searches a pandas DataFrame for the closest matches to a given search string.
 
     Args:
         search_string (str): The user inputted string to search for. 
@@ -114,6 +114,29 @@ def filter_search_results(search_string, season_choice, rating_choice, char_choi
         return filtered_df, search_results
 
 
+def load_corpus(df_imdb, df_script):
+    """
+    Load sentence transformer and encode corpus for episode querying.
+    
+    Args:
+        df_imdb (pandas.DataFrame): The corpus.
+    
+    Returns:
+        fdkfhkdsjfhds
+    """
+    df_imdb['Dialogue'] = df_imdb.Title.apply(lambda x: 
+                                                  '\n'.join(get_script_from_ep(df_imdb, 
+                                                                               df_script, 
+                                                                               x).Dialogue.values))
+    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue'] + ' '.join(x['Summaries']), axis=1)
+    embedder = SentenceTransformer('all-MiniLM-L6-v2')
+
+    # Idk which corpus will use
+    # corpus = df_script.Dialogue.values
+    corpus = df_imdb.text.values
+    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    return corpus, corpus_embeddings, embedder
+    
 def query_episodes(df_imdb, df_script, query):
     """
     Searches a pandas DataFrame for the closest matches to a given search string.
@@ -126,20 +149,8 @@ def query_episodes(df_imdb, df_script, query):
         pandas.DataFrame: The 5 closest matches to the search string.
     """
     try:
-        # Format corpus 
-        df_imdb['Dialogue'] = df_imdb.Title.apply(lambda x: 
-                                                  '\n'.join(get_script_from_ep(df_imdb, 
-                                                                               df_script, 
-                                                                               x).Dialogue.values))
-        df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue'] + ' '.join(x['Summaries']), axis=1)
-        embedder = SentenceTransformer('all-MiniLM-L6-v2')
-        
-        # Idk which corpus will use
-        # corpus = df_script.Dialogue.values
-        corpus = df_imdb.text.values
-        corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+        corpus, corpus_embeddings, embedder = st.session_state.query
         df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score' : []})
-
         query_embedding = embedder.encode(query, convert_to_tensor=True)
 
         # Cosine-similarity and torch.topk for highest 5 scores
