@@ -25,7 +25,11 @@ def main():
     ------------
         1. seasons : int
     """
-    st.markdown("""<h5 style='text-align: center; color: white;'>
+    st.markdown("""<h2 style='text-align: center; color: white;'>
+            Home</h2>""",
+            unsafe_allow_html=True)
+
+    st.markdown("""<h5 style='text-align: center; color: white;'><br>
             Explore your favorite Seinfeld moments, characters, and quotes!
             <br>Use the Episode Recommender to find an episode that's
             sure to make you laugh.</h5>""",
@@ -55,9 +59,14 @@ def main():
     except ValueError:
         st.error("Failed to instantiate class")
 
+    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+                Select Season(s)</h6>""",
+                unsafe_allow_html=True)
+
     seasons = st.multiselect(
         'Select Season(s)',
-        dialog_df["Season"].unique(),
+        label_visibility="collapsed",
+        options=dialog_df["Season"].unique(),
         default=[1,2,3]
     )
 
