@@ -130,9 +130,8 @@ def load_corpus(df_imdb, df_script):
     # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
     corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
     return corpus, corpus_embeddings, embedder
-
-
-def query_episodes(df_imdb, df_script, query):
+    
+def query_episodes(df_imdb, query):
     """
     Searches a pandas DataFrame for the closest matches to the search string.
     Args:
