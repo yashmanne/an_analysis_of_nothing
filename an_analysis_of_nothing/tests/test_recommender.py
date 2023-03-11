@@ -32,12 +32,12 @@ def mocked_read_csv(*args, **kwargs):
         elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
             return mock_script_data
 
-class TestDataProcessor(unittest.TestCase):
+class TestDataRecommender(unittest.TestCase):
     def setUp(self):
         pass
 
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    def test_recommender_init(self, mock):
+    def test_init(self, mock):
         # mock.return_value = self.mock_imdb_data
         imdb, script = data_manager.load_data()
         recommender = Recommender(meta=imdb, scripts=script)
@@ -45,11 +45,17 @@ class TestDataProcessor(unittest.TestCase):
         self.assertIsNotNone(recommender.vector_list)
 
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    def test_recommender_finder(self, mock):
+    def test_finder(self, mock):
         imdb, script = data_manager.load_data()
         recommender = Recommender(meta=imdb, scripts=script)
         closest = recommender.find_closest_episodes(1, ['The Stakeout'])
         self.assertIsNotNone(closest)
         pd.testing.assert_series_equal(closest.iloc[0,:], imdb.iloc[0,:])
-
-        
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_reset(self, mock):
+        imdb, script = data_manager.load_data()
+        recommender = Recommender(meta=imdb, scripts=script)
+        self.assertEqual(recommender.weights, [1, 1, 0.8, 0.5, 0.2, 0.2, 0.4])
+        recommender.reset_weights()
+        self.assertEqual(recommender.weights, [1, 1, 0.8, 0.5, 0.2, 0.2, 0.4])        
