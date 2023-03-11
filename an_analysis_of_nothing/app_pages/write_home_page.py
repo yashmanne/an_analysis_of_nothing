@@ -11,7 +11,7 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 import numpy as np
-from utils import data_manager, recommender
+from utils import data_manager, recommender, episode_query
 
 def main():
     """
@@ -56,6 +56,8 @@ def main():
         if "recommender" not in st.session_state:
             st.session_state.recommender = recommender.Recommender(
                 imdb_df, dialog_df)
+        if 'query' not in st.session_state:
+            st.session_state.query = episode_query.load_corpus(imdb_df, dialog_df)
     except ValueError:
         st.error("Failed to instantiate class")
 
