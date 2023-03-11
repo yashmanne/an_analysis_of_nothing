@@ -49,7 +49,7 @@ class TestEpisodeQuery(unittest.TestCase):
         pd.testing.assert_frame_equal(episodes, imdb)
 
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    def test_query_episodes(self, mock):
+    def test_query_episodes_ag_obj(self, mock):
         # mock.return_value = self.mock_imdb_data
         imdb, script = data_manager.load_data()
         episodes = episode_query.query_episodes(imdb, 'Woman from michigan')  
@@ -57,9 +57,9 @@ class TestEpisodeQuery(unittest.TestCase):
         print(ag_obj)
         self.assertIsInstance(ag_obj, pd.DataFrame)
     
-    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv) # this is unnecessary function
-    def test_query_episodes(self, mock):
-        # mock.return_value = self.mock_imdb_data
-        imdb, script = data_manager.load_data()
-        new_imdb = episode_query.map_imdb_to_scripts(imdb, script)
-        self.assertIn('SEID', new_imdb.columns)
+    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv) # this is unnecessary function
+    # def test_transform(self, mock):
+    #     # mock.return_value = self.mock_imdb_data
+    #     imdb, script = data_manager.load_data()
+    #     new_imdb = episode_query.map_imdb_to_scripts(imdb, script)
+    #     self.assertIn('SEID', new_imdb.columns)
