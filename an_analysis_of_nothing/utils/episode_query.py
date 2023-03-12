@@ -13,6 +13,7 @@ import torch
 
 from . import data_manager
 
+
 def filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, df_imdb, df_script):
     """
