@@ -4,11 +4,13 @@ page and is called by the main app.py script.
 This script uses functions contained in the episode_query.py
 located in the utils folder.
 """
+
 import pandas as pd
 import numpy as np
 import streamlit as st
 import plotly.express as px
 from utils import episode_query
+
 
 def main():
     """

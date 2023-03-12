@@ -10,11 +10,12 @@ located in the utils folder.
 import streamlit as st
 import pandas as pd
 
+
 def main():
     """
     This function executes the Streamlit formatted HTML
     displayed on the Episode Recommender webpage and utilizes user
-    inputs to calculate recommened episodes.
+    inputs to calculate recommended episodes.
 
     Arguments: None
     Returns: None
