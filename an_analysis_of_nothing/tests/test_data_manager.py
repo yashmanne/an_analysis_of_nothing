@@ -137,7 +137,7 @@ class TestDataManager(unittest.TestCase):
         self.assertEqual(counts['KRAMER'], 0)
     
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_character_read_csv)
-    def test_line_counts_pecific(self, mock):
+    def test_line_counts_specific(self, mock):
         imdb, script = data_manager.load_data()
         counts = data_manager.get_line_counts_per_episode(scripts=script, characters=['JERRY', 'PETER'])
         self.assertIsInstance(counts, OrderedDict)
@@ -147,7 +147,7 @@ class TestDataManager(unittest.TestCase):
         self.assertEqual(counts['PETER'], 1)
 
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_character_read_csv)
-    def test_line_counts_pecific(self, mock):
+    def test_counts_unkown_specific(self, mock):
         imdb, script = data_manager.load_data()
         counts = data_manager.get_line_counts_per_episode(scripts=script, characters=['JERRY', 'PETER', 'JABRONI'])
         self.assertIsInstance(counts, OrderedDict)
@@ -157,8 +157,15 @@ class TestDataManager(unittest.TestCase):
         self.assertEqual(counts['JERRY'], 3)
         self.assertEqual(counts['PETER'], 1)
         self.assertEqual(counts['JABRONI'], 0)
-
-
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_character_read_csv)
+    def test_counts_empty_specific(self, mock):
+        imdb, script = data_manager.load_data()
+        counts = data_manager.get_line_counts_per_episode(scripts=script, characters=[])
+        self.assertIsInstance(counts, OrderedDict)
+        self.assertNotIn('GEORGE', counts)
+        self.assertEqual(len(counts), 0)
+    
 
 if __name__ == '__main__':
     unittest.main()
