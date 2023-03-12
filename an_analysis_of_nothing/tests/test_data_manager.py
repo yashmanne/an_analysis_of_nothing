@@ -84,6 +84,14 @@ class TestDataManager(unittest.TestCase):
         imdb, script = data_manager.load_data()
         self.assertIsInstance(imdb, pd.DataFrame)
         self.assertIsInstance(script, pd.DataFrame)
+
+        # Testing that apply eval is working
+        self.assertIsInstance(imdb.keyWords.iloc[0], list)
+        self.assertIsInstance(imdb.Summaries.iloc[0], list)
+        self.assertIsInstance(imdb.keyWords[0][0], str)
+        self.assertIsInstance(imdb.Summaries[0][0], str)
+
+
         self.assertEqual(len(imdb), 1)
         self.assertEqual(len(script), 5)
         self.assertIsInstance(imdb['Summaries'].iloc[0], list)
@@ -129,7 +137,7 @@ class TestDataManager(unittest.TestCase):
         self.assertEqual(counts['KRAMER'], 0)
     
     @patch('utils.data_manager.pd.read_csv', side_effect=mocked_character_read_csv)
-    def test_line_counts_episode_specific(self, mock):
+    def test_line_counts_pecific(self, mock):
         imdb, script = data_manager.load_data()
         counts = data_manager.get_line_counts_per_episode(scripts=script, characters=['JERRY', 'PETER'])
         self.assertIsInstance(counts, OrderedDict)
@@ -137,6 +145,20 @@ class TestDataManager(unittest.TestCase):
         self.assertNotIn('GEORGE', counts)
         self.assertEqual(counts['JERRY'], 3)
         self.assertEqual(counts['PETER'], 1)
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_character_read_csv)
+    def test_line_counts_pecific(self, mock):
+        imdb, script = data_manager.load_data()
+        counts = data_manager.get_line_counts_per_episode(scripts=script, characters=['JERRY', 'PETER', 'JABRONI'])
+        self.assertIsInstance(counts, OrderedDict)
+        self.assertIn('PETER', counts)
+        self.assertIn('JABRONI', counts)
+        self.assertNotIn('GEORGE', counts)
+        self.assertEqual(counts['JERRY'], 3)
+        self.assertEqual(counts['PETER'], 1)
+        self.assertEqual(counts['JABRONI'], 0)
+
+
 
 if __name__ == '__main__':
     unittest.main()
