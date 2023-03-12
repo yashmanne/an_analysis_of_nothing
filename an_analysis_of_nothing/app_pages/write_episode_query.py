@@ -1,7 +1,6 @@
 """
 This script contains the contents of the Episode Querying
 page and is called by the main app.py script.
-
 This script uses functions contained in the episode_query.py
 located in the utils folder.
 """
@@ -16,41 +15,33 @@ def main():
     This function executes the Streamlit formatted HTML
     displayed on the Episode Querying webpage and utilizes user
     inputs to search for and display user input.
-
     Arguments: None
     Returns: None
     """
     # Intro text/logo
-    try:
-        # Load data
-        df_imdb = pd.DataFrame(st.session_state.df_imdb)
-        df_script = pd.DataFrame(st.session_state.df_dialog)
-    except Exception as e:
-        st.error("There was an issue loading data")
-
-    st.markdown("""<h2 style='text-align: center; color: white;'>
-                        Episode Querying<br></h2>""",
+    # Load data
+    df_imdb = pd.DataFrame(st.session_state.df_imdb)
+    df_script = pd.DataFrame(st.session_state.df_dialog)
+    # Titles, image, search bar
+    st.markdown("""<h2 style='text-align: center; color: white;'><br>
+                        Episode Querying<br><br></h2>""",
                         unsafe_allow_html=True)
-
-    st.markdown("""<h5 style='text-align: center; color: white;'><br>
+    st.markdown("""<h6 style='text-align: left; color: white;'><br>
             Search for specific episodes from the show by entering
             keywords, concepts, or topics in the search bar below.
             Then, view sentiment statistics for the five queried episodes.
-            <br><br></h5>""",
+            <br><br></h6>""",
             unsafe_allow_html=True)
-
     left_5, middle_5, right_5 = st.columns([1.65,5,1])
     with middle_5:
         st.image('./static/images/elaine_typing.gif')
-    with left_5 and right_5:
-        pass
-
     # Configure sidebar
     st.sidebar.markdown("## Advanced Search")
     st.sidebar.markdown(
-    """
-    *Use the sidebar to optionally toggle by season,
-    rating, and more.*"""
+        """
+        *Use the sidebar to optionally toggle by season,
+        rating, and more.*
+        """
     )
     filters = ['Season', 'Episode Rating', 'Speaking Character(s)']
     with st.sidebar:
@@ -59,106 +50,44 @@ def main():
             filters,
             [],
         )
-
     seasons = np.unique(df_imdb['Season'])
     characters = np.unique(df_script['Character'])
-
+    ratings = np.unique(df_imdb['averageRating'])
     season_choice = None
     rating_choice = None
     char_choice = None
-
     if 'Season' in selected_filters:
-        season_choice = st.sidebar.multiselect('Select a Season:', seasons)
-
+        season_choice = st.sidebar.multiselect('Select a Season:',
+                                               seasons)
     if 'Episode Rating' in selected_filters:
-        ratings = np.unique(df_imdb['averageRating'])
-        rating_choice = st.sidebar.slider(
-                                'Select which episode ratings to include:',
-                                min_value = float(np.min(ratings)),
-                                max_value = float(np.max(ratings)),
-                                value = (7.1, 9.6))
+        rating_choice = st.sidebar.slider('Select which episode ratings to include:', 
+                                           min_value = float(np.min(ratings)),
+                                           max_value = float(np.max(ratings)),
+                                           value = (7.1, 9.6))
     if 'Speaking Character(s)' in selected_filters:
-        characters = np.unique(df_script['Character'])
         char_choice = st.sidebar.multiselect('Speaking Characters',
-                                            characters)
-
+                                             characters)
     # Search functionality
     try:
-        # Search bar and instructions
-        st.markdown("""<h6 style='text-align: left; color: white;'><br>
-                Enter search criteria:</h6>""",
-                unsafe_allow_html=True)
-
+        st.markdown('##### Enter search criteria: ')
         search_string = st.text_input(
-            'Enter search criteria',
-            label_visibility= "collapsed",
-            placeholder = "e.g. Mean soup guy, Kramer falls over")
-
-        st.markdown("""<h6 style='text-align: left; color: white;'><br>
-                Select an episode to learn more.</h6>""",
-                unsafe_allow_html=True)
-
+            'Enter search criteria: ',
+            label_visibility = 'collapsed',
+            placeholder = """e.g. Mean soup guy, Jerry and Kramer argue, Kramer falls over""")
+        st.markdown("""
+                    ###### Select an episode to learn more.
+                    """
+                   )
         # Filter data according to user input
-        if season_choice and rating_choice and char_choice:
-            filtered_df = episode_query.get_characters(df_imdb,
-                                      df_script,
-                                      char_choice)
-            filtered_df = episode_query.get_ratings(filtered_df,
-                                           rating_choice)
-            filtered_df = episode_query.get_seasons(filtered_df,
-                                           season_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-
-        elif season_choice and rating_choice == None and char_choice == None:
-            filtered_df = episode_query.get_seasons(df_imdb,
-                                           season_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-
-        elif season_choice == None and rating_choice and char_choice == None:
-            filtered_df = episode_query.get_ratings(df_imdb,
-                                           rating_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-
-        elif season_choice == None and rating_choice == None and char_choice:
-            filtered_df = episode_query.get_characters(df_imdb,
-                                              df_script,
-                                               char_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-
-        elif season_choice == None and rating_choice and char_choice:
-            filtered_df = episode_query.get_characters(df_imdb,
-                                              df_script,
-                                              char_choice)
-            filtered_df = episode_query.get_ratings(filtered_df,
-                                            rating_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-
-        elif season_choice and rating_choice == None and char_choice:
-            filtered_df = episode_query.get_seasons(df_imdb,
-                                            season_choice)
-            filtered_df = episode_query.get_characters(filtered_df,
-                                              df_script,
-                                              char_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-        elif season_choice and rating_choice and char_choice == None:
-            filtered_df = episode_query.get_ratings(df_imdb,
-                                            rating_choice)
-            filtered_df = episode_query.get_seasons(filtered_df,
-                                              season_choice)
-            search_results = episode_query.query_episodes(filtered_df,
-                                                 search_string)
-        else:
-            filtered_df = df_imdb
-            search_results = episode_query.query_episodes(df_imdb,
-                                                 search_string)
-
-        col2_1, col2_2, col2_3 = st.columns([5, .5, 3])
+        filtered_df, search_results = episode_query.filter_search_results(
+                                                        search_string,
+                                                         season_choice,
+                                                         rating_choice,
+                                                         char_choice,
+                                                         df_imdb,
+                                                         df_script)
+        # Display
+        col2_1, col2_2, _, col2_3 = st.columns([4, .5, .5, 2.5])
         with col2_1:
             if search_string:
                 response = episode_query.get_selected_row(search_results)
@@ -166,10 +95,7 @@ def main():
                 search_results = filtered_df.sort_values(
                     'averageRating', ascending=False).iloc[:5]
                 response = episode_query.get_selected_row(search_results)
-        with col2_2 and col2_3:
-            pass
-
-        # Initial descriptive stats
+        # Descriptive stats
         # Default
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
@@ -183,112 +109,63 @@ def main():
             season = selected_imdb['Season'].values[0]
             rating = selected_imdb['averageRating'].values[0]
             director = selected_imdb['Director'].values[0]
-
         # Metadata
         with col2_3:
             st.metric("Season", season)
             st.metric("Average Rating", str(rating) + ' ⭐')
             st.metric("Director", director)
-        st.markdown("""<h3 style='text-align: left; color: white;'>
-                IMDb Episode Description:</h3>""",
-                unsafe_allow_html=True)
+        st.markdown('###### IMDb Episode Description: ')
         st.markdown(desc)
-
     except Exception as e:
         st.write(e)
         st.error(
-            """There was an issue processing your selections
-            for searching functionality."""
-        )
-
+            "There was an issue processing your selections for searching functionality."
+                )
     # Analysis functionality
     try:
-        st.markdown("""<h3 style='text-align: left; color: white;'>
-                        Sentiment Statistics<br></h3>""",
-                        unsafe_allow_html=True)
-
+        st.markdown(
+            """
+            ### Sentiment Statistics
+            Here's a breakdown of that episode's average sentiments.
+            """
+        )
         if len(response) != 0:
-
-            st.markdown("""<h5 style='text-align: center; color: white;'><br>
-                Average Weighted Sentiment</h5>""",
-                unsafe_allow_html=True)
-
             episode = selected_imdb.Title.values[0]
             selected = episode_query.get_script_from_ep(
                 df_imdb, df_script, episode)
-
             selected[['Happy', 'Angry', 'Surprise', 'Sad', 'Fear']
                      ] = selected.apply(episode_query.extract_emotions,
                                         axis=1)
             selected['Count'] = 1
             selected['Argmax'] = selected.apply(episode_query.extract_argmax,
                                                 axis=1)
-            grouped_df = selected[['Happy', 'Angry', 'Surprise','Sad',
-                                   'Fear', 'SEID']].groupby('SEID').sum()
+            grouped_df = selected[['Happy', 'Angry', 'Surprise',
+                                   'Sad', 'Fear', 'SEID']].groupby('SEID').sum()
             grouped_df = grouped_df.reset_index()
-
             # Melt the DataFrame to create a long format
             melted_df = grouped_df.melt(
-                id_vars='SEID', var_name='Emotion', value_name='sum')
-
-            fig = px.bar(melted_df,
-                        x='sum',
-                        y='Emotion',
-                        color='SEID',
-                        orientation='h',
-                        template="presentation"
-                        )
-
+                id_vars='SEID',
+                var_name='Emotion',
+                value_name='sum')
+            fig = px.bar(melted_df, x='sum', y='Emotion',
+                         color='SEID', orientation='h')
             fig.update_layout(
                 xaxis_title="Weighted Total",
                 yaxis_title="Sentiment",
-                showlegend=False,
-                paper_bgcolor="rgba(0,0,0,0)",
-                plot_bgcolor = "rgba(0,0,0,0)",
-                newshape_line_color = "white"
+                showlegend=True
             )
-            fig.update_xaxes(
-                title_font_color="white",
-                tickfont_color="white",
-                showgrid=True
-            )
-            fig.update_yaxes(
-                title_font_color="white",
-                tickfont_color="white",
-            )
-
-            fig2 = px.sunburst(selected,
-                            path=['Character', 'Argmax'],
-                            values='Count',
-                            template="presentation")
-            fig2.update_layout(
-                width = 500,
-                height = 500,
-                autosize=True
-            )
-
-            st.plotly_chart(fig, use_container_width=True)
-
-            st.markdown("""<h6 style='text-align: center; color:
-                white; font-style: italic;'>
-                What emotions prevailed in this episode?<br><br></h6>""",
-                unsafe_allow_html=True)
-
-            col3_1, col3_2, col3_3= st.columns([1,6,1])
+            fig2 = px.sunburst(
+                selected, path=['Character', 'Argmax'],
+                values='Count')
+            col3_1, col3_2, _ = st.columns([3, 3, 1])
+            with col3_1:
+                st.plotly_chart(fig, use_container_width=True)
+                st.markdown('*What emotions prevailed in this episode?*')
             with col3_2:
                 st.plotly_chart(fig2)
-            with col3_1 and col3_3:
-                pass
-
-            st.markdown("""<h6 style='text-align: center;
-                color: white; font-style: italic;'>
-                Click on any characters to see how they were feeling.
-                <br><br></h6>""",
-                unsafe_allow_html=True)
-        else:
-            st.write("Choose an episode to view its sentiment analysis!")
+                st.markdown('*Click on any characters to see how they were feeling.*')
     except Exception as e:
         st.error(
-            """There was an issue processing your data for analysis.
-               Please choose another episode"""
+            """There was an issue processing your data for sentiment analysis.
+            Please choose another episode"""
         )
