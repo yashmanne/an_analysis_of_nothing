@@ -5,6 +5,7 @@ import unittest
 from collections import OrderedDict
 from unittest.mock import patch
 import pandas as pd
+import torch
 from utils import data_manager
 
 
@@ -296,6 +297,29 @@ class TestDataManager(unittest.TestCase):
         self.assertIsInstance(counts, OrderedDict)
         self.assertNotIn('GEORGE', counts)
         self.assertEqual(len(counts), 0)
+
+
+class TestQueryTensor(unittest.TestCase):
+    """
+    Test class for get_episode_query_tensors()
+    """
+    # Mocking pandas read_csv function
+    # def mocked_read_csv(*args, **kwargs):
+    #     if args[0] == 'file1.csv':
+    #         return pd.DataFrame({'col1': [1, 2, 3], 'col2': ['a', 'b', 'c']})
+    #     elif args[0] == 'file2.csv':
+    #         return pd.DataFrame({'col1': [4, 5, 6], 'col2': ['d', 'e', 'f']})
+
+    def setUp(self):
+        pass
+
+    def test_smoke(self):
+        """
+        Smoke test
+        """
+        tensor = data_manager.get_episode_query_tensors()
+        self.assertIsInstance(tensor, torch.Tensor)
+        
 
 if __name__ == '__main__':
     unittest.main()
