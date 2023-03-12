@@ -134,7 +134,7 @@ def mocked_read_csv_duplicate(*args):
             'reference to ethel merman',
             'polishing shoes', 'birthday party', 'dream', 'video store']"""],
         [1, 3, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", "S01E03",
-             "tt0697784", "The Stakeout", 2, 23, "5113", 7.5, "Jerry and George stake \
+             "tt0697784", "The Stakeout2", 2, 23, "5113", 7.5, "Jerry and George stake \
             out the lobby of an office building to find a woman Jerry met at a party but\
             whose name and phone number he didn't get.", """["Elaine drags Jerry to a \
             birthday dinner for one of her friends where he meets an attractive woman. \
@@ -149,7 +149,7 @@ def mocked_read_csv_duplicate(*args):
             'reference to ethel merman',
             'polishing shoes', 'birthday party', 'dream', 'video store']"""],
         [1, 4, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", "S01E04",
-             "tt0697784", "The Stakeout", 2, 23, "5113", 7.5, "Jerry and George stake \
+             "tt0697784", "The Stakeout3", 2, 23, "5113", 7.5, "Jerry and George stake \
             out the lobby of an office building to find a woman Jerry met at a party but\
             whose name and phone number he didn't get.", """["Elaine drags Jerry to a \
             birthday dinner for one of her friends where he meets an attractive woman. \
