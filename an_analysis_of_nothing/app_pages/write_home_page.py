@@ -13,6 +13,7 @@ import plotly.express as px
 import numpy as np
 from utils import data_manager, recommender, episode_query
 
+
 def main():
     """
     This function executes the Streamlit formatted HTML
