@@ -352,3 +352,41 @@ class TestExtractArgmax(unittest.TestCase):
         emotion = episode_query.extract_argmax(script.iloc[0,:])
         self.assertIsInstance(emotion, str)
         self.assertEqual(emotion, 'No Emotion')
+
+class TestGetCharacters(unittest.TestCase):
+    """
+    Test class for the get_characters() method
+    """
+    def setUp(self):
+        pass
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_smoke(self, _):
+        """
+        Smoke test for get characters
+        """
+        imdb, script = data_manager.load_data()
+        eps = episode_query.get_characters(imdb, script, ['JERRY'])
+        self.assertIn('S01E02',eps.SEID.tolist())
+        self.assertEqual(len(eps.SEID.tolist()), 2)
+
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_multiple_characters(self, _):
+        """
+        Tests passing multiple characters.
+        """
+        imdb, script = data_manager.load_data()
+        eps = episode_query.get_characters(imdb, script, ['JERRY', 'GEORGE'])
+        self.assertIn('S01E02',eps.SEID.tolist())
+        self.assertEqual(len(eps.SEID.tolist()), 2)
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_fake_characters(self, _):
+        """
+        Tests passing multiple characters.
+        """
+        imdb, script = data_manager.load_data()
+        eps = episode_query.get_characters(imdb, script, ['JIMBO', 'JABRONI'])
+        self.assertNotIn('S01E02',eps.SEID.tolist())
+        self.assertEqual(len(eps.SEID.tolist()), 0)
