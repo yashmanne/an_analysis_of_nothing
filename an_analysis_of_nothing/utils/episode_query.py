@@ -119,8 +119,7 @@ def load_corpus(df_imdb, df_script):
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
     # try: 'distilbert-base-nli-stsb-mean-tokens'
     corpus = df_script.Dialogue.values
-    # corpus_embeddings = embedder.encode(corpus,
-    # convert_to_tensor=True)
+    # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
     corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
     return corpus, corpus_embeddings, embedder
 
@@ -139,7 +138,7 @@ def query_episodes(df_imdb, query):
     query_embedding = embedder.encode(query, convert_to_tensor=True)
     # Cosine-similarity and torch.topk for highest scores
     cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
-    top_results = torch.topk(cos_scores, k=170)
+    top_results = torch.topk(cos_scores, k=500)
     for score, idx in zip(top_results[0], top_results[1]):
         df = pd.concat([df, pd.Series({'Dialogue': corpus[idx],
                                        'Index': int(idx),
@@ -147,10 +146,9 @@ def query_episodes(df_imdb, query):
                        ignore_index=True)
     # Map to df_imdb
     df_script = st.session_state.df_dialog
-    df['Title'] = df.Index.apply(lambda x: df_imdb[
-        df_imdb.SEID == df_script.iloc[x]['SEID']]['Title']
-                                 .values[0]
-                                )
+    df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
+    df = df[df.SEID.isin(df_imdb.SEID)]
+    df['Title'] = df.Index.apply(lambda x: df_imdb[df_imdb.SEID == df_script.iloc[x]['SEID']]['Title'].values[0])
     df_imdb = df_imdb[df_imdb.Title.isin(
         df.drop_duplicates(
         subset=['Title']).iloc[0:5].Title
