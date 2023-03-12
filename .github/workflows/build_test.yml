@@ -39,7 +39,7 @@ jobs:
     # GitHub will run the tests for each of these Python versions.
     strategy:
       matrix:
-        python-version: ["3.8", "3.9", "3.10"]
+        python-version: ["3.9", "3.10"]
 
     # The actual workflow steps!
     steps:
@@ -129,4 +129,4 @@ jobs:
           parallel-finished: true
           # This says finish the parallel runs that we did above
           # and send to Coveralls.
-          carryforward: "run-3.7,run-3.8,run-3.9,run-3.10"
+          carryforward: "run-3.9,run-3.10"
