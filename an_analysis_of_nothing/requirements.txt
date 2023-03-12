@@ -8,5 +8,4 @@ numpy
 sentence-transformers
 streamlit-option-menu
 streamlit-aggrid
-torch
 git-lfs
