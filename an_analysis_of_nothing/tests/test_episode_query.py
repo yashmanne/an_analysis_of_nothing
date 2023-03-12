@@ -1,6 +1,7 @@
 import unittest
 from unittest.mock import patch
 import pandas as pd
+import torch
 from utils import data_manager, episode_query
 
 
@@ -48,8 +49,9 @@ def mocked_read_csv(*args):
         'scrabble', 'hearing characters thoughts', 'made up word', \
         'reference to john cougar mellencamp', 'reference to ethel merman', \
         'polishing shoes', 'birthday party', 'dream', 'video store']"],
-        
-        [2, 2, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", "S02E02", "tt0697784",
+
+        [2, 2, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", 
+        "S02E02", "tt0697784",
         "The Stakeout", 2, 23, "5113", 1, "Jerry and George stake \
         out the lobby of an office building to \
         find a woman Jerry met at a party but whose name and phone \
@@ -390,3 +392,25 @@ class TestGetCharacters(unittest.TestCase):
         eps = episode_query.get_characters(imdb, script, ['JIMBO', 'JABRONI'])
         self.assertNotIn('S01E02',eps.SEID.tolist())
         self.assertEqual(len(eps.SEID.tolist()), 0)
+
+class TestLoadCorpus(unittest.TestCase):
+    """
+    Test class for the load_corpus() method
+    """
+    def setUp(self):
+        pass
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    def test_smoke(self, _):
+        """
+        Smoke test for load corpus
+        """
+        imdb, script = data_manager.load_data()
+        c, c_emb, emb = episode_query.load_corpus(imdb, script)
+        
+        self.assertIsInstance(c, object)
+        self.assertIsInstance(c_emb, torch.Tensor)
+
+
+
+
