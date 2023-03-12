@@ -1,11 +1,10 @@
-pandas
-streamlit
-plotly
-fuzzywuzzy
 nltk
-scikit-learn
-numpy
+numpy>=1.2
+pandas>=1.4
+plotly>=5
+scikit-learn>=1.2
 sentence-transformers
+streamlit==1.18
 streamlit-option-menu
 streamlit-aggrid
-git-lfs
+
