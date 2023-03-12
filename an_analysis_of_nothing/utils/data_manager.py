@@ -4,6 +4,7 @@ Contains functions that count/modify original data.
 from collections import OrderedDict
 import numpy as np
 import pandas as pd
+import torch
 
 from . import data_constants
 
@@ -22,6 +23,21 @@ def load_data():
     scripts = pd.read_csv(data_constants.SCRIPTS_LINK)
     return meta, scripts
 
+
+def get_episode_query_tensors(num_shards=10):
+    """
+    Load in pre-computed feature vectors for cosine similarity.
+
+    :param num_shards: number of times the raw feature vector
+                       was sharded to allow Git tracking.
+    """
+    all_tensors = []
+    for i in range(num_shards):
+        npy_tensor = np.load(f"./static/data/dialogue_tensors/tensor_{i}.npy")
+        all_tensors.append(npy_tensor)
+    npy_2d = np.concatenate(all_tensors)
+    torch_tensor = torch.from_numpy(npy_2d)
+    return torch_tensor
 
 def get_line_counts(scripts):
     """

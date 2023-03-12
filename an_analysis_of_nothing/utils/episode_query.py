@@ -3,18 +3,17 @@ The following code contains utility functions for processing
 TV show dialogue data and searching for specific episodes
 based on keywords.
 """
+
 import pandas as pd
 import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 from sentence_transformers import SentenceTransformer, util
 import torch
 
-def filter_search_results(search_string,
-                          season_choice,
-                          rating_choice,
-                          char_choice,
-                          df_imdb,
-                          df_script):
+from . import data_manager
+
+def filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, df_imdb, df_script):
     """
     Filters imdb dataframe based on query from user and sidebar options.
     Args:
@@ -128,7 +127,8 @@ def load_corpus(df_imdb, df_script):
     # try: 'distilbert-base-nli-stsb-mean-tokens'
     corpus = df_script.Dialogue.values
     # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
-    corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
+    # corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
+    corpus_embeddings = data_manager.get_episode_query_tensors(num_shards=10)
     return corpus, corpus_embeddings, embedder
 
 
