@@ -42,18 +42,21 @@ def filter_search_results(search_string,
         filtered_df = get_seasons(filtered_df,
                                   season_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice and rating_choice is None and char_choice is None:
         filtered_df = get_seasons(df_imdb,
                                   season_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice is None and rating_choice and char_choice is None:
         filtered_df = get_ratings(df_imdb,
                                   rating_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice is None and rating_choice is None and char_choice:
@@ -61,6 +64,7 @@ def filter_search_results(search_string,
                                      df_script,
                                      char_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice is None and rating_choice and char_choice:
@@ -70,6 +74,7 @@ def filter_search_results(search_string,
         filtered_df = get_ratings(filtered_df,
                                   rating_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice and rating_choice is None and char_choice:
@@ -79,6 +84,7 @@ def filter_search_results(search_string,
                                      df_script,
                                      char_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     if season_choice and rating_choice and char_choice is None:
@@ -87,11 +93,13 @@ def filter_search_results(search_string,
         filtered_df = get_seasons(filtered_df,
                                   season_choice)
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
     else:
         filtered_df = df_imdb
         search_results = query_episodes(filtered_df,
+                                        df_script,
                                         search_string)
         return filtered_df, search_results
 
@@ -124,7 +132,7 @@ def load_corpus(df_imdb, df_script):
     return corpus, corpus_embeddings, embedder
 
 
-def query_episodes(df_imdb, query):
+def query_episodes(df_imdb, df_script, query):
     """
     Searches a pandas DataFrame for the closest matches to the search string.
     Args:
@@ -145,7 +153,6 @@ def query_episodes(df_imdb, query):
                                        'Score' : score}).to_frame().T],
                        ignore_index=True)
     # Map to df_imdb
-    df_script = st.session_state.df_dialog
     df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
     df = df[df.SEID.isin(df_imdb.SEID)]
     df['Title'] = df.Index.apply(lambda x: df_imdb[df_imdb.SEID == df_script.iloc[x]['SEID']]['Title'].values[0])
