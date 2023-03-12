@@ -1,306 +1,266 @@
 """
-The following code contains utility functions for processing TV show dialogue data and 
-searching for specific episodes based on keywords.
+The following code contains utility functions for processing
+TV show dialogue data and searching for specific episodes
+based on keywords.
 """
-import ast
-import re
-import string
 import pandas as pd
-import numpy as np
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics.pairwise import cosine_similarity
 import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
 from sentence_transformers import SentenceTransformer, util
 import torch
 
-# Search and selection tools: filter_search_results, query_episodes, get_selected_row, 
-                            # get_characters, get_seasons, get_ratings
-def filter_search_results(search_string, season_choice, rating_choice, char_choice, df_imdb, df_script):
+def filter_search_results(search_string,
+                          season_choice,
+                          rating_choice,
+                          char_choice,
+                          df_imdb,
+                          df_script):
     """
-    Searches a pandas DataFrame for the closest matches to a given search string.
-
+    Filters imdb dataframe based on query from user and sidebar options.
     Args:
-        search_string (str): The user inputted string to search for. 
-        season_choice (list): The user inputted list of seasons to filter, 
+        search_string (str): The user inputted string to search for.
+        season_choice (list): The user inputted list of seasons to filter,
             or None if not specified.
-        rating_choice (tuple): The user inputted range of ratings to filter, 
+        rating_choice (tuple): The user inputted range of ratings to filter,
             or None if not specified.
-        char_choice (list): The user inputted list of characters to filter, 
+        char_choice (list): The user inputted list of characters to filter,
             or None if not specified.
-        df_imdb (pandas.DataFrame): The IMDb metadata DataFrame (st.session_state.df_imdb).
-        df_script (pandas.DataFrame): The scripts DataFrame (st.session_state.df_dialog).
-
+        df_imdb (pd.DataFrame): The IMDb metadata DataFrame
+            (st.session_state.df_imdb).
+        df_script (pd.DataFrame): The scripts DataFrame
+            (st.session_state.df_dialog).
     Returns:
-        tuple: The filtered df_imdb dataframe, and the closest matches to the 
+        tuple: The filtered df_imdb dataframe, and the closest matches to the
             search string from the filtered dataframe.
     """
-    # Manually configure every possible input i guess
     if season_choice and rating_choice and char_choice:
-        filtered_df = get_characters(df_imdb, 
-                                     df_script, 
-                                     char_choice) 
-        filtered_df = get_ratings(filtered_df, 
-                                  rating_choice)
-        filtered_df = get_seasons(filtered_df, 
-                                  season_choice)  
-        search_results = query_episodes(filtered_df, 
-                                        df_script, 
-                                        search_string)
-        return filtered_df, search_results
-
-    elif season_choice and rating_choice == None and char_choice == None:        
-        filtered_df = get_seasons(df_imdb, 
-                                  season_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script,
-                                        search_string)
-        return filtered_df, search_results
-
-    elif season_choice == None and rating_choice and char_choice == None:
-        filtered_df = get_ratings(df_imdb, 
-                                  rating_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script,
-                                        search_string)
-        return filtered_df, search_results
-
-    elif season_choice == None and rating_choice == None and char_choice:        
-        filtered_df = get_characters(df_imdb, 
+        filtered_df = get_characters(df_imdb,
                                      df_script,
                                      char_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script, 
-                                        search_string)
-        return filtered_df, search_results
-
-    elif season_choice == None and rating_choice and char_choice:     
-        filtered_df = get_characters(df_imdb, 
-                                     df_script, 
-                                     char_choice)
-        filtered_df = get_ratings(filtered_df, 
+        filtered_df = get_ratings(filtered_df,
                                   rating_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script,
-                                        search_string)
-        return filtered_df, search_results
-
-    elif season_choice and rating_choice == None and char_choice:        
-        filtered_df = get_seasons(df_imdb, 
+        filtered_df = get_seasons(filtered_df,
                                   season_choice)
-        filtered_df = get_characters(filtered_df, 
-                                     df_script, 
-                                     char_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script,
+        search_results = query_episodes(filtered_df,
                                         search_string)
         return filtered_df, search_results
-    
-    elif season_choice and rating_choice and char_choice == None:        
-        filtered_df = get_ratings(df_imdb, 
+    if season_choice and rating_choice is None and char_choice is None:
+        filtered_df = get_seasons(df_imdb,
+                                  season_choice)
+        search_results = query_episodes(filtered_df,
+                                        search_string)
+        return filtered_df, search_results
+    if season_choice is None and rating_choice and char_choice is None:
+        filtered_df = get_ratings(df_imdb,
                                   rating_choice)
-        filtered_df = get_seasons(filtered_df, 
-                                  season_choice)
-        search_results = query_episodes(filtered_df, 
-                                        df_script,
+        search_results = query_episodes(filtered_df,
                                         search_string)
         return filtered_df, search_results
-    
+    if season_choice is None and rating_choice is None and char_choice:
+        filtered_df = get_characters(df_imdb,
+                                     df_script,
+                                     char_choice)
+        search_results = query_episodes(filtered_df,
+                                        search_string)
+        return filtered_df, search_results
+    if season_choice is None and rating_choice and char_choice:
+        filtered_df = get_characters(df_imdb,
+                                     df_script,
+                                     char_choice)
+        filtered_df = get_ratings(filtered_df,
+                                  rating_choice)
+        search_results = query_episodes(filtered_df,
+                                        search_string)
+        return filtered_df, search_results
+    if season_choice and rating_choice is None and char_choice:
+        filtered_df = get_seasons(df_imdb,
+                                  season_choice)
+        filtered_df = get_characters(filtered_df,
+                                     df_script,
+                                     char_choice)
+        search_results = query_episodes(filtered_df,
+                                        search_string)
+        return filtered_df, search_results
+    if season_choice and rating_choice and char_choice is None:
+        filtered_df = get_ratings(df_imdb,
+                                  rating_choice)
+        filtered_df = get_seasons(filtered_df,
+                                  season_choice)
+        search_results = query_episodes(filtered_df,
+                                        search_string)
+        return filtered_df, search_results
     else:
         filtered_df = df_imdb
-        search_results = query_episodes(df_imdb, 
-                                        df_script,
+        search_results = query_episodes(filtered_df,
                                         search_string)
         return filtered_df, search_results
 
 
 def load_corpus(df_imdb, df_script):
     """
-    Load sentence transformer and encode corpus for episode querying.
-    
+    Load sentence transformer and embedder for episode querying.
     Args:
-        df_imdb (pandas.DataFrame): The corpus.
-    
+        df_imdb (pd.DataFrame): The IMDb metadata DataFrame
+            (st.session_state.df_imdb).
+        df_script (pd.DataFrame): The scripts DataFrame
+            (st.session_state.df_dialog).
     Returns:
-        fdkfhkdsjfhds
+        list: Dialogue and summaries for each episode in df_imdb.
+        tensor: Vectorized corpus (embeddings).
+        SentenceTransformer: BertModel for finding closest matches.
     """
-    df_imdb['Dialogue'] = df_imdb.Title.apply(lambda x: 
-                                                  '\n'.join(get_script_from_ep(df_imdb, 
-                                                                               df_script, 
-                                                                               x).Dialogue.values))
-    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue'] + ' '.join(x['Summaries']), axis=1)
+    df_imdb['Dialogue'] = df_imdb.Title.apply(
+        lambda x:'\n'.join(get_script_from_ep(df_imdb,
+                                              df_script,
+                                              x).Dialogue.values))
+    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue']
+                                    +
+                                    ' '.join(x['Summaries']), axis=1)
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
-
-    # Idk which corpus will use
-    # corpus = df_script.Dialogue.values
-    corpus = df_imdb.text.values
-    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    # try: 'distilbert-base-nli-stsb-mean-tokens'
+    corpus = df_script.Dialogue.values
+    # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
+    corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
     return corpus, corpus_embeddings, embedder
-    
-def query_episodes(df_imdb, df_script, query):
-    """
-    Searches a pandas DataFrame for the closest matches to a given search string.
 
+
+def query_episodes(df_imdb, query):
+    """
+    Searches a pandas DataFrame for the closest matches to the search string.
     Args:
-        df_imdb (pandas.DataFrame): The DataFrame to search.
+        df_imdb (pd.DataFrame): The DataFrame to search.
         query (str): The string to search for.
-
     Returns:
-        pandas.DataFrame: The 5 closest matches to the search string.
+        pd.DataFrame: The 5 closest matches to the search string.
     """
-    try:
-        corpus, corpus_embeddings, embedder = st.session_state.query
-        df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score' : []})
-        query_embedding = embedder.encode(query, convert_to_tensor=True)
+    corpus, corpus_embeddings, embedder = st.session_state.query
+    df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score' : []})
+    query_embedding = embedder.encode(query, convert_to_tensor=True)
+    # Cosine-similarity and torch.topk for highest scores
+    cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
+    top_results = torch.topk(cos_scores, k=500)
+    for score, idx in zip(top_results[0], top_results[1]):
+        df = pd.concat([df, pd.Series({'Dialogue': corpus[idx],
+                                       'Index': int(idx),
+                                       'Score' : score}).to_frame().T],
+                       ignore_index=True)
+    # Map to df_imdb
+    df_script = st.session_state.df_dialog
+    df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
+    df = df[df.SEID.isin(df_imdb.SEID)]
+    df['Title'] = df.Index.apply(lambda x: df_imdb[df_imdb.SEID == df_script.iloc[x]['SEID']]['Title'].values[0])
+    df_imdb = df_imdb[df_imdb.Title.isin(
+        df.drop_duplicates(
+        subset=['Title']).iloc[0:5].Title
+    )]
+    return df_imdb
 
-        # Cosine-similarity and torch.topk for highest 5 scores
-        cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
-        top_results = torch.topk(cos_scores, k=170)
 
-        for score, idx in zip(top_results[0], top_results[1]):
-            df = pd.concat([df, pd.Series({'Dialogue': corpus[idx], 
-                                           'Index': int(idx), 
-                                           'Score' : score}).to_frame().T], 
-                           ignore_index=True)
-        # Map to df_imdb
-        df['Title'] = df.Index.apply(lambda x: df_imdb.iloc[x].Title)
-        df_imdb = df_imdb[df_imdb.Title.isin(df.head(5).Title)]
-            
-        return df_imdb
-    
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return df_imdb
-    
-    
 def get_selected_row(search_results):
     """
-    Get a subset of the input dataframe containing only the selected episode, 
-    as inputted by the user. 
-
+    Get a subset of the input dataframe containing only the selected episode,
+    as inputted by the user.
     Args:
-        search_results: a Pandas DataFrame as outputted by query_episodes.
-
+        search_results (pd.DataFrame): a Pandas DataFrame as
+            outputted by query_episodes.
     Returns:
-        response (pd.DataFrame): a DataFrame containing all 
-        metadata for the row selected by the user.
+        response (pd.DataFrame): a DataFrame containing all
+            metadata for the row selected by the user.
     """
-    try:
-        search_results = search_results[['Title', 'EpisodeNo']]
+    search_results = search_results[['Title', 'EpisodeNo']]
+    # Create a grid builder object to process user selections
+    grid = GridOptionsBuilder.from_dataframe(search_results)
+    grid.configure_default_column(enablePivot = True,
+                                enableValue = True,
+                                enableRowGroup = True)
+    grid.configure_column('EpisodeNo', min_column_width=1)
+    grid.configure_selection(use_checkbox = True)
+    grid.configure_auto_height(False)
+    gridoptions = grid.build()
+    # Load the grid options into an AgGrid object
+    response = AgGrid(search_results,
+                      gridOptions = gridoptions,
+                      enable_enterprise_modules = True,
+                      update_mode = GridUpdateMode.MODEL_CHANGED,
+                      data_return_mode =
+                      DataReturnMode.FILTERED_AND_SORTED)
 
-        # Create a grid builder object to process user selections
-        gb = GridOptionsBuilder.from_dataframe(search_results)
-        gb.configure_default_column(enablePivot = True, 
-                                    enableValue = True, 
-                                    enableRowGroup = True)
-        gb.configure_column('EpisodeNo', min_column_width=1)
-        gb.configure_selection(use_checkbox = True)
-        gb.configure_auto_height(False)
-        gridoptions = gb.build()
-        
-        # Load the grid options into an AgGrid object
-        response = AgGrid(search_results, 
-                          gridOptions = gridoptions,  
-                          enable_enterprise_modules = True, 
-                          update_mode = GridUpdateMode.MODEL_CHANGED, 
-                          data_return_mode = DataReturnMode.FILTERED_AND_SORTED)
+    # Convert the AgGrid into a pandas dataframe row
+    return pd.DataFrame(response['selected_rows'])
 
-        # Convert the AgGrid into a pandas dataframe row
-        return pd.DataFrame(response['selected_rows'])
-    
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return response
-    
-    
+
 def get_characters(df_imdb, df_script, char_choice):
     """
     Extract episodes from the IMDb containing the user inputted
     characters in char_choice.
-    
     Args:
-        df_imdb (pandas.DataFrame): The DataFrame of IMDb data.
-        df_script (pandas.DataFrame): The DataFrame of script data.
+        df_imdb (pd.DataFrame): The DataFrame of IMDb data.
+        df_script (pd.DataFrame): The DataFrame of script data.
         char_choice (list): A list of characters to search for.
-    
     Returns:
-        pandas.DataFrame: an IMDb DataFrame of only the episodes that 
-        contain dialogue by the selected character(s).
-    
+        pd.DataFrame: an IMDb DataFrame of only the episodes that
+            contain dialogue by the selected character(s).
     """
     char_list = df_script.groupby('SEID')['Character'].apply(list)
-    
     df_imdb = df_imdb.sort_values('SEID')
     df_char = pd.DataFrame(char_list).reset_index()
     df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
     df_imdb['char_list'] = df_char['Character']
     df_imdb = df_imdb.dropna()
-    df_imdb['char_check'] = df_imdb.char_list.apply(lambda x: all(char in x for char in char_choice))
+    df_imdb['char_check'] = df_imdb.char_list.apply(
+        lambda x: all(char in x for char in char_choice))
     return df_imdb[df_imdb.char_check == True]
-    
-    
+
+
 def get_seasons(df_imdb, season_choice):
     """
     Extract episodes from the IMDb containing the user inputted
     seasons in char_choice.
-    
     Args:
-        df_imdb (pandas.DataFrame): The DataFrame of IMDb data.
+        df_imdb (pd.DataFrame): The DataFrame of IMDb data.
         season_choice (list): A list of seasons to search for.
-    
     Returns:
-        pandas.DataFrame: an IMDb DataFrame of only the episodes that 
-        are from the selected season(s).
-    
+        pd.DataFrame: an IMDb DataFrame of only the episodes that
+            are from the selected season(s).
     """
     return df_imdb[df_imdb.Season.isin(season_choice)]
-    
-    
+
+
 def get_ratings(df_imdb, rating_choice):
     """
     Extract episodes from the IMDb containing the user inputted
     ratings in rating_choice.
-    
     Args:
-        df_imdb (pandas.DataFrame): The DataFrame of IMDb data.
+        df_imdb (pd.DataFrame): The DataFrame of IMDb data.
         rating_choice (tuple): A tuple range of ratings to search for.
-    
     Returns:
-        pandas.DataFrame: an IMDb DataFrame of only the episodes that 
-        are rated within the selected rating range.
-    
+        pd.DataFrame: an IMDb DataFrame of only the episodes that
+            are rated within the selected rating range.
     """
     upper = df_imdb[df_imdb.averageRating <= rating_choice[1]]
     return upper[upper.averageRating >= rating_choice[0]]
 
 
-# Sentiment Analysis tools: get_script_from_ep, extract_argmax, extract_emotions, preprocess_text
 def get_script_from_ep(df_imdb, df_script, episode):
     """
     Returns a DataFrame of dialogue occurrences for a given episode.
-
     Args:
-    df_imdb (pandas.DataFrame): The DataFrame of IMDb data.
-    df_script (pandas.DataFrame): The DataFrame of script data.
-    episode: The title of the episode selected by the user.
-
+        df_imdb (pd.DataFrame): The DataFrame of IMDb data.
+        df_script (pd.DataFrame): The DataFrame of script data.
+        episode: The title of the episode selected by the user.
     Returns:
-    pandas.DataFrame: The DataFrame of dialogue occurrences.
+        pd.DataFrame: The DataFrame of dialogue occurrences.
     """
     try:
         # Filter the IMDb data for the selected episode
         selected_episodes = df_imdb.loc[df_imdb['Title'] == episode]
-
         # Filter the script data for the selected SEIDs
         selected_dialogue = df_script.loc[df_script['SEID'].isin(
             selected_episodes['SEID'].unique())]
-
         return selected_dialogue
-    
     except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
+        # If an error occurs,
+        # log the error message and return the original DataFrame
         st.error(str(e))
         return df_script
 
@@ -308,50 +268,33 @@ def get_script_from_ep(df_imdb, df_script, episode):
 def extract_emotions(row):
     """
     Extract individual emotions from a row of emotions as separate columns.
-
     Args:
-        row: a Pandas Series containing emotion data in the form of a dictionary.
-
+        row: a Pandas Series containing emotion data.
     Returns:
-        A Pandas Series containing the individual emotion values for the row.
+        pd.Series: A series containing individual emotion values for the row.
     """
-    try:
-        happy = row['Happy']
-        angry = row['Angry']
-        surprise = row['Surprise']
-        sad = row['Sad']
-        fear = row['Fear']
-        return pd.Series({'Happy': happy, 
-                          'Angry': angry, 
-                          'Surprise': surprise, 
-                          'Sad': sad, 
-                          'Fear': fear})
-    
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return pd.Series({'Happy': 0, 'Angry': 0, 'Surprise': 0, 'Sad': 0, 'Fear': 0})
-    
-# Will maybe change maybe 
+    happy = row['Happy']
+    angry = row['Angry']
+    surprise = row['Surprise']
+    sad = row['Sad']
+    fear = row['Fear']
+    return pd.Series({'Happy': happy,
+                      'Angry': angry,
+                      'Surprise': surprise,
+                      'Sad': sad,
+                      'Fear': fear})
+
+
 def extract_argmax(row):
     """
     Extract the maximum emotion from a row of emotions as a string.
-
     Args:
-        row: a Pandas Series containing emotion data in the form of a dictionary.
-
+        row: a Pandas Series containing emotion data.
     Returns:
-        The key corresponding to the maximum value in the dictionary, 
+        str: The key corresponding to the maximum value in the dictionary,
         or 'No Emotion' if all values are zero.
     """
-    try:
-        emotions_dict = dict(extract_emotions(row))
-        if all(value == 0 for value in emotions_dict.values()):
-            return 'No Emotion'
-        else:
-            return max(emotions_dict, key=emotions_dict.get)
-        
-    except Exception as e:
-        # If an error occurs, log the error message and return the original DataFrame
-        st.error(str(e))
-        return pd.Series
+    emotions_dict = dict(extract_emotions(row))
+    if all(value == 0 for value in emotions_dict.values()):
+        return 'No Emotion'
+    return max(emotions_dict, key=emotions_dict.get)
