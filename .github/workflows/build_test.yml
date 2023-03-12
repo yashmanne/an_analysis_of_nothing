@@ -135,7 +135,7 @@ jobs:
 # events (eg a workflow that runs on branch pushes, versus a
 # workflow that runs when a GitHub issue is created). Give your
 # workflow a descriptive name so that you know what it is.
-name: build_test
+name: build_main
 
 # What is the event that triggers this workflow? Options include
 # push, pull_request, create, issues, etc. This configuration says
@@ -144,12 +144,12 @@ name: build_test
 on:
   push:
     branches:
-      - qa_branch
+      - qa_main
   pull_request:
     # Configuring this means that your PRs will get a GitHub comment
     # from Coveralls with your coverage.
     branches:
-      - qa_branch
+      - qa_main
 
 # A list of jobs to run as part of the workflow
 jobs:
