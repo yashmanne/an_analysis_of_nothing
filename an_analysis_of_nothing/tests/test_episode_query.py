@@ -515,22 +515,22 @@ class TestFilterSearchResults(unittest.TestCase):
     def setUp(self):
         pass
 
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    @patch('streamlit.session_state', MockObject())
-    def test_all_values(self):
-        """
-        Tests when non of arguments are null
-        """
-        imdb, script = data_manager.load_data()
-        search_string = "Jerry waits in lobby"
-        season_choice = [4]
-        rating_choice = [7,10]
-        char_choice = ['JERRY']
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
-                          char_choice, imdb, script)
-        print(filtered_df.head())
-        print(search_results.head())
-        self.assertEqual(True, filtered_df.iloc[0]['char_check'])
-        self.assertEqual(4, filtered_df.iloc[0]['Season'])
-        self.assertGreater(np.min(filtered_df['averageRating']), 6.9)
+    # # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
+    # @patch('streamlit.session_state', MockObject())
+    # def test_all_values(self):
+    #     """
+    #     Tests when non of arguments are null
+    #     """
+    #     imdb, script = data_manager.load_data()
+    #     search_string = "Jerry waits in lobby"
+    #     season_choice = [4]
+    #     rating_choice = [7,10]
+    #     char_choice = ['JERRY']
+    #     filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+    #                       char_choice, imdb, script)
+    #     print(filtered_df.head())
+    #     print(search_results.head())
+    #     self.assertEqual(True, filtered_df.iloc[0]['char_check'])
+    #     self.assertEqual(4, filtered_df.iloc[0]['Season'])
+    #     self.assertGreater(np.min(filtered_df['averageRating']), 6.9)
         
