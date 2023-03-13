@@ -115,10 +115,10 @@ def mocked_read_csv(*args):
         'Character', 'Dialogue', 'SEID', 'Season', 'EpisodeNo',
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
-    if args[0] == 'https://drive.google.com/uc?id=1VA6wa3lc9LnmJSe8I8EtP82Ooc4SQfwz':
-        return mock_imdb_data
-    elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
+    if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
     else:
         return mock_imdb_data
 
@@ -167,9 +167,9 @@ def mocked_read_csv_large(*args):
         'reference to john cougar mellencamp', 'reference to ethel merman', \
         'polishing shoes', 'birthday party', 'dream', 'video store']"],
 
-        [2, 2, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", 
+        [4, 2, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", 
         "S02E02", "tt0697784",
-        "The Stakeout", 2, 23, "5113", 1, "Jerry and George stake \
+        "The Stakeout", 4, 23, "5113", 8, "Jerry and George stake \
         out the lobby of an office building to \
         find a woman Jerry met at a party but whose name and phone \
         number he didn't get.",
@@ -187,8 +187,10 @@ def mocked_read_csv_large(*args):
         'polishing shoes', 'birthday party', 'dream', 'video store']"],
     ]
     data_scripts_raw = [
-        ['GEORGE', 'Are you through?', 'S01E01', 1, 1, 0, 0, 0, 0, 0, 3],
-    ] * 26561
+        ['JERRY', 'Are you through?', 'S01E01', 4, 1, 0, 0, 0, 0, 0, 3],
+        ['GEORGE', 'Are you through?', 'S01E01', 4, 1, 0, 0, 0, 0, 0, 3],
+
+    ] * 50000
 
 
     mock_imdb_data = pd.DataFrame(data_imdb_raw, columns=['Season',
@@ -200,9 +202,10 @@ def mocked_read_csv_large(*args):
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
     if args[0] == data_constants.SCRIPTS_LINK:
-        return mock_imdb_data
-    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
+
     else:
         return mock_imdb_data
 
@@ -515,22 +518,22 @@ class TestFilterSearchResults(unittest.TestCase):
     def setUp(self):
         pass
 
-    # # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # @patch('streamlit.session_state', MockObject())
-    # def test_all_values(self):
-    #     """
-    #     Tests when non of arguments are null
-    #     """
-    #     imdb, script = data_manager.load_data()
-    #     search_string = "Jerry waits in lobby"
-    #     season_choice = [4]
-    #     rating_choice = [7,10]
-    #     char_choice = ['JERRY']
-    #     filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
-    #                       char_choice, imdb, script)
-    #     print(filtered_df.head())
-    #     print(search_results.head())
-    #     self.assertEqual(True, filtered_df.iloc[0]['char_check'])
-    #     self.assertEqual(4, filtered_df.iloc[0]['Season'])
-    #     self.assertGreater(np.min(filtered_df['averageRating']), 6.9)
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_all_values(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = [1]
+        rating_choice = [7,10]
+        char_choice = ['JERRY']
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        print(filtered_df.head())
+        print(search_results.head())
+        self.assertEqual(True, filtered_df.iloc[0]['char_check'])
+        self.assertEqual(1, filtered_df.iloc[0]['Season'])
+        self.assertGreater(np.min(filtered_df['averageRating']), 6.9)
         

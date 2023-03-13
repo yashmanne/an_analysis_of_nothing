@@ -95,9 +95,9 @@ def mocked_read_csv(*args):
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
     if args[0] == data_constants.SCRIPTS_LINK:
-        return mock_imdb_data
-    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
     else:
         return mock_imdb_data
 
@@ -207,9 +207,9 @@ def mocked_read_csv_duplicate(*args):
     'Dialogue', 'SEID', 'Season', 'EpisodeNo', 'Happy', 'Angry', 'Surprise',
     'Sad', 'Fear', 'numWords'])
     if args[0] == data_constants.SCRIPTS_LINK:
-        return mock_imdb_data
-    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
     else:
         return mock_imdb_data
 
