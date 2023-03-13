@@ -105,35 +105,6 @@ def filter_search_results(search_string, season_choice, rating_choice,
         return filtered_df, search_results
 
 
-def _create_corpus_embeddings(df_imdb, df_script):
-    """
-    Use sentence transformer to generate dialogue embeddings
-    for episode querying and store sharded files as numpy arrays.
-    Args:
-        df_imdb (pd.DataFrame): The IMDb metadata DataFrame
-            (st.session_state.df_imdb).
-        df_script (pd.DataFrame): The scripts DataFrame
-            (st.session_state.df_dialog).
-    Returns:
-        None
-    """
-    df_imdb['Dialogue'] = df_imdb.Title.apply(
-        lambda x: '\n'.join(get_script_from_ep(df_imdb,
-                                               df_script,
-                                               x).Dialogue.values))
-    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue']
-                                              +
-                                              ' '.join(x['Summaries']), axis=1)
-    embedder = SentenceTransformer('all-MiniLM-L6-v2')
-    corpus = df_script.Dialogue.values
-    corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
-    tensors = torch.split(corpus_embeddings, split_size_or_sections=5459)
-    for i, tensor in enumerate(tensors):
-        np.save(f"./static/data/dialogue_tensors/tensor_{i}.npy",
-                tensor.numpy())
-    return
-
-
 def load_corpus(df_imdb, df_script):
     """
     Load sentence transformer and embedder for episode querying.
@@ -147,18 +118,10 @@ def load_corpus(df_imdb, df_script):
         tensor: Vectorized corpus (embeddings).
         SentenceTransformer: BertModel for finding closest matches.
     """
-    df_imdb['Dialogue'] = df_imdb.Title.apply(
-        lambda x:'\n'.join(get_script_from_ep(df_imdb,
-                                              df_script,
-                                              x).Dialogue.values))
-    df_imdb['text'] = df_imdb.apply(lambda x: x['Dialogue']
-                                    +
-                                    ' '.join(x['Summaries']), axis=1)
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
     # try: 'distilbert-base-nli-stsb-mean-tokens'
     corpus = df_script.Dialogue.values
     # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
-    # corpus_embeddings = torch.load('./static/data/dialogue_tensor.pt')
     corpus_embeddings = data_manager.get_episode_query_tensors(num_shards=10)
     return corpus, corpus_embeddings, embedder
 
