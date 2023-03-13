@@ -32,7 +32,7 @@ def main():
                 unsafe_allow_html=True)
 
     st.markdown("""<h5 style='text-align: center; color: white;'><br>
-                Please answer the follow prompts to recieve
+                Please answer the follow prompts to receive
                 episode recommendations.<br><br></h5>""",
                 unsafe_allow_html=True)
 
