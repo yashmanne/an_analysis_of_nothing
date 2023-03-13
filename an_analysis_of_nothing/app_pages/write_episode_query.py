@@ -20,6 +20,7 @@ def main():
     Arguments: None
     Returns: None
     """
+    # pylint: disable=too-many-locals, too-many-statements
     # Intro text/logo
     # Load data
     df_imdb = pd.DataFrame(st.session_state.df_imdb)
@@ -84,10 +85,12 @@ def main():
                 Enter search criteria.</h6>""",
                 unsafe_allow_html=True)
 
+        placeholder = 'e.g. Mean soup guy, Jerry and Kramer argue, '\
+                        'Kramer falls over'
         search_string = st.text_input(
             'Enter search criteria: ',
             label_visibility ='collapsed',
-            placeholder="""e.g. Mean soup guy, Jerry and Kramer argue, Kramer falls over""")
+            placeholder=placeholder)
 
         st.markdown("""
             <h6 style='text-align: center; color: white; text-style: italic;'>

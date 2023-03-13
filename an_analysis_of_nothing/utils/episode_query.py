@@ -4,7 +4,6 @@ TV show dialogue data and searching for specific episodes
 based on keywords.
 """
 
-import numpy as np
 import pandas as pd
 import streamlit as st
 from st_aggrid import AgGrid, GridOptionsBuilder, \
@@ -35,6 +34,7 @@ def filter_search_results(search_string, season_choice, rating_choice,
         tuple: The filtered df_imdb dataframe, and the closest matches to the
             search string from the filtered dataframe.
     """
+    # pylint: disable=too-many-arguments, too-many-return-statements
     if season_choice and rating_choice and char_choice:
         filtered_df = get_characters(df_imdb,
                                      df_script,
@@ -98,12 +98,11 @@ def filter_search_results(search_string, season_choice, rating_choice,
                                         df_script,
                                         search_string)
         return filtered_df, search_results
-    else:
-        filtered_df = df_imdb
-        search_results = query_episodes(filtered_df,
-                                        df_script,
-                                        search_string)
-        return filtered_df, search_results
+    filtered_df = df_imdb
+    search_results = query_episodes(filtered_df,
+                                    df_script,
+                                    search_string)
+    return filtered_df, search_results
 
 
 def load_corpus(df_imdb, df_script):
@@ -121,9 +120,7 @@ def load_corpus(df_imdb, df_script):
         SentenceTransformer: BertModel for finding closest matches.
     """
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
-    # try: 'distilbert-base-nli-stsb-mean-tokens'
     corpus = df_script.Dialogue.values
-    # corpus_embeddings = embedder.encode(corpus, convert_to_tensor=True)
     corpus_embeddings = data_manager.get_episode_query_tensors(num_shards=10)
     return corpus, corpus_embeddings, embedder
 
@@ -152,7 +149,9 @@ def query_episodes(df_imdb, df_script, query):
     # Map to df_imdb
     df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
     df = df[df.SEID.isin(df_imdb.SEID)]
-    df['Title'] = df.Index.apply(lambda x: df_imdb[df_imdb.SEID == df_script.iloc[x]['SEID']]['Title'].values[0])
+    df['Title'] = df.Index.apply(
+        lambda x: df_imdb[df_imdb.SEID
+                          == df_script.iloc[x]['SEID']]['Title'].values[0])
     df_imdb = df_imdb.loc[df_imdb.Title.isin(
         df.drop_duplicates(
         subset=['Title']).iloc[0:5].Title
@@ -176,14 +175,15 @@ def get_selected_row(search_results):
     ]
     # Create a grid builder object to process user selections
     grid = GridOptionsBuilder.from_dataframe(search_results)
-    grid.configure_default_column(
-        enablePivot=True,
-        enableValue=True,
-        enableRowGroup=True)
+    grid.configure_default_column(enablePivot=True,
+                                  enableValue=True,
+                                  enableRowGroup=True)
     grid.configure_selection(use_checkbox=True)
-    grid.configure_column('SEID', header_name="Episode ID",
+    grid.configure_column('SEID',
+                          header_name="Episode ID",
                           min_column_width=1)
-    grid.configure_column('averageRating', header_name="Rating",
+    grid.configure_column('averageRating',
+                          header_name="Rating",
                           min_column_width=1)
     grid.configure_auto_height(False)
     gridoptions = grid.build()
@@ -192,16 +192,17 @@ def get_selected_row(search_results):
     max_height = 800
     row_height = 30
 
-    response = AgGrid(
-        search_results,
-        gridOptions=gridoptions,
-        enable_enterprise_modules=True,
-        update_mode=GridUpdateMode.MODEL_CHANGED,
-        data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
-        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
-        theme="streamlit",
-        height=min(min_height + len(search_results) * row_height, max_height)
-    )
+    response = AgGrid(search_results,
+                      gridOptions=gridoptions,
+                      enable_enterprise_modules=True,
+                      update_mode=GridUpdateMode.MODEL_CHANGED,
+                      data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+                      columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+                      theme="streamlit",
+                      height=min(min_height +
+                                 len(search_results) *
+                                 row_height, max_height)
+                     )
 
     # Convert the AgGrid into a pandas dataframe row
     return pd.DataFrame(response['selected_rows'])
@@ -269,18 +270,12 @@ def get_script_from_ep(df_imdb, df_script, episode):
     Returns:
         pd.DataFrame: The DataFrame of dialogue occurrences.
     """
-    try:
-        # Filter the IMDb data for the selected episode
-        selected_episodes = df_imdb.loc[df_imdb['Title'] == episode]
-        # Filter the script data for the selected SEIDs
-        selected_dialogue = df_script.loc[df_script['SEID'].isin(
-            selected_episodes['SEID'].unique())]
-        return selected_dialogue
-    except Exception as e:
-        # If an error occurs,
-        # log the error message and return the original DataFrame
-        st.error(str(e))
-        return df_script
+    # Filter the IMDb data for the selected episode
+    selected_episodes = df_imdb.loc[df_imdb['Title'] == episode]
+    # Filter the script data for the selected SEIDs
+    selected_dialogue = df_script.loc[df_script['SEID'].isin(
+        selected_episodes['SEID'].unique())]
+    return selected_dialogue
 
 
 def extract_emotions(row):
