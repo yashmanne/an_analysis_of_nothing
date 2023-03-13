@@ -88,12 +88,6 @@ def main():
         with col2_1 and col2_3:
             pass
 
-        if len(response) == 0:
-            desc = 'Choose an episode to view its IMDb description!'
-        else:
-            selected_imdb = imdb_df_rec[
-                imdb_df_rec.Title == response['Title'].values[0]]
-
         # Metadata
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
