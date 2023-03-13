@@ -88,9 +88,9 @@ def mocked_read_csv(*args):
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
     if args[0] == data_constants.SCRIPTS_LINK:
-        return mock_imdb_data
-    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
     else:
         return mock_imdb_data
 
@@ -174,10 +174,10 @@ def mocked_character_read_csv(*args):
         'Character', 'Dialogue', 'SEID', 'Season', 'EpisodeNo',
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
-    if args[0] == 'https://drive.google.com/uc?id=1VA6wa3lc9LnmJSe8I8EtP82Ooc4SQfwz': #episode link
-        return mock_imdb_data
-    elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
+    if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
+    elif args[0] == data_constants.EPISODE_LINK:
+        return mock_imdb_data
     else:
         return mock_imdb_data
 
