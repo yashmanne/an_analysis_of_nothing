@@ -26,7 +26,7 @@ def main():
     ------------
         1. seasons : int
     """
-    st.markdown("""<h2 style='text-align: center; color: white;'>
+    st.markdown("""<h2 style='text-align: center; color: #031B28;'>
             Home</h2>""",
             unsafe_allow_html=True)
 
@@ -62,7 +62,7 @@ def main():
     except ValueError:
         st.error("Failed to instantiate class")
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+    st.markdown("""<h6 style='text-align: center; color: white;'><br>
                 Select Season(s)</h6>""",
                 unsafe_allow_html=True)
 
@@ -73,8 +73,8 @@ def main():
         default=[1,2,3]
     )
 
-    st.markdown("""<h5 style='text-align: center; color: white;'><br>
-                Lines Spoken by Character and Season</h5>""",
+    st.markdown("""<h4 style='text-align: center; color: #031B28;'><br>
+                Lines Spoken by Character and Season</h4>""",
                 unsafe_allow_html=True)
 
     selected_seasons = np.in1d(dialog_df["Season"], seasons)
@@ -118,8 +118,8 @@ def main():
     with four:
         st.image('./static/images/elaine.png', width=210)
 
-    st.markdown("""<h5 style='text-align: center; color: white;'><br>
-                Average Episode Rating</h5>""",
+    st.markdown("""<h4 style='text-align: center; color: #031B28;'><br>
+                Average Episode Rating</h4>""",
                 unsafe_allow_html=True)
 
     chosen_seasons = np.in1d(imdb_df["Season"], seasons)

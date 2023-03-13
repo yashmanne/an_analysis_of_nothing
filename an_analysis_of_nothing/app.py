@@ -29,23 +29,13 @@ st.markdown("""<style>
                 background-position: center;
             }
             [data-testid="stSidebar"] {
-                background-color: #93ACC7;
+                background-color: #889FB8;
             }
             [data-testid="stMarkdownContainer"] {
                 color: white;
             }
             [data-testid="stVerticalBlock"] {
-                background-color: #93ACC7;
-            }
-            div.stButton > button:first-child{
-                background-color: navy;
-                color: white;
-                border: 2px solid #93ACC7;
-            }
-            div.stButton > button:focus{
-                background-color: grey;
-                color: white;
-                border: 2px solid #93ACC7;
+                background-color: #889FB8;
             }
             [data-testid="stVerticalBlock"] {
                 color: white;

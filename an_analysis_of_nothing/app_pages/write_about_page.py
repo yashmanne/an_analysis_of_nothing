@@ -15,7 +15,7 @@ def main():
     Arguments: None
     Returns: None
     """
-    st.markdown("""<h2 style='text-align: center; color: white;'>
+    st.markdown("""<h2 style='text-align: center; color: #031B28;'>
                 About Us<br></h2>""",
                 unsafe_allow_html=True)
 
@@ -25,37 +25,38 @@ def main():
                 web application for Seinfeld fans to explore
                 and query dialogue snippets, identify correlations between
                 character appearances and audience ratings, and chronicle
-                appearances of various characters across the series.</h5>""",
+                appearances of various characters across the series.
+                <br><br></h5>""",
                 unsafe_allow_html=True)
 
-    st.markdown("""<h3 style='text-align: left; color: white;'><br>
-                Creators:</h3>""",
-                unsafe_allow_html=True)
-
-    left_2, right_2 = st.columns(2)
+    left_2, middle_2, right_2 = st.columns([1, 0.09, 1])
     with left_2:
         st.image('./static/images/kramer_.jpg', width=314)
-        st.markdown("""<h6 style='text-align: center; color: white;'>
+        st.markdown("""<h5 style='text-align: center; color: #031B28;'>
                 Yash Manne<br>
-                Project Manager</h6>""",
+                <p style='color: white;'>Project Manager<p></h5>""",
                 unsafe_allow_html=True)
     with right_2:
-        st.image('./static/images/elaine_.jpg', width=345)
-        st.markdown("""<h6 style='text-align: center; color: white;'>
+        st.image('./static/images/elaine_.jpg', width=326)
+        st.markdown("""<h5 style='text-align: center; color: #031B28;'>
                 Aditi Shrivastava<br>
-                Developer<br><br></h6>""",
+                <p style='color: white;'>Developer<p></h5>""",
                 unsafe_allow_html=True)
+    with middle_2:
+        pass
 
-    left_3, right_3 = st.columns(2)
+    left_3, middle_3, right_3 = st.columns([1, 0.069, 1])
     with left_3:
         st.image('./static/images/newman_.jpg', width=314)
-        st.markdown("""<h6 style='text-align: center; color: white;'>
+        st.markdown("""<h5 style='text-align: center; color: #031B28;'>
                 Yamina Katariya<br>
-                UX Designer<br><br></h6>""",
+                <p style='color: white;'>UX Designer<p></h5>""",
                 unsafe_allow_html=True)
     with right_3:
-        st.image('./static/images/george_.jpg', width=345)
-        st.markdown("""<h6 style='text-align: center; color: white;'>
-                Chandler Audlt<br>
-                Quality Assurance<br><br></h6>""",
+        st.image('./static/images/george_.jpg', width=330)
+        st.markdown("""<h5 style='text-align: center; color: #031B28;'>
+                Chandler Ault<br>
+                <p style='color: white;'>Quality Assurance<p></h5>""",
                 unsafe_allow_html=True)
+    with middle_3:
+        pass

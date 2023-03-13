@@ -205,23 +205,30 @@ def get_selected_row(search_results):
         response (pd.DataFrame): a DataFrame containing all
             metadata for the row selected by the user.
     """
-    search_results = search_results[['Title', 'EpisodeNo']]
+    search_results = search_results[['SEID','Title', 'averageRating']]
     # Create a grid builder object to process user selections
     grid = GridOptionsBuilder.from_dataframe(search_results)
     grid.configure_default_column(enablePivot = True,
                                 enableValue = True,
                                 enableRowGroup = True)
-    grid.configure_column('EpisodeNo', min_column_width=1)
     grid.configure_selection(use_checkbox = True)
+    grid.configure_column('SEID', min_column_width=1)
+    grid.configure_column('averageRating', min_column_width=1)
     grid.configure_auto_height(False)
     gridoptions = grid.build()
     # Load the grid options into an AgGrid object
+    min_height = 70
+    max_height = 800
+    row_height = 30
+
     response = AgGrid(search_results,
                       gridOptions = gridoptions,
                       enable_enterprise_modules = True,
                       update_mode = GridUpdateMode.MODEL_CHANGED,
                       data_return_mode =
-                      DataReturnMode.FILTERED_AND_SORTED)
+                      DataReturnMode.FILTERED_AND_SORTED,
+                      theme="streamlit",
+                      height=min(min_height + len(search_results) * row_height, max_height))
 
     # Convert the AgGrid into a pandas dataframe row
     return pd.DataFrame(response['selected_rows'])
