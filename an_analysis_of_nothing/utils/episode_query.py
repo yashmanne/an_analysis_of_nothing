@@ -7,7 +7,8 @@ based on keywords.
 import numpy as np
 import pandas as pd
 import streamlit as st
-from st_aggrid import AgGrid, GridOptionsBuilder, GridUpdateMode, DataReturnMode
+from st_aggrid import AgGrid, GridOptionsBuilder, \
+    GridUpdateMode, DataReturnMode, ColumnsAutoSizeMode
 from sentence_transformers import SentenceTransformer, util
 import torch
 
@@ -111,6 +112,7 @@ def load_corpus(df_imdb, df_script):
     Args:
         df_imdb (pd.DataFrame): The IMDb metadata DataFrame
             (st.session_state.df_imdb).
+            Unused but passed to maintain backwards compatibility.
         df_script (pd.DataFrame): The scripts DataFrame
             (st.session_state.df_dialog).
     Returns:
@@ -130,7 +132,8 @@ def query_episodes(df_imdb, df_script, query):
     """
     Searches a pandas DataFrame for the closest matches to the search string.
     Args:
-        df_imdb (pd.DataFrame): The DataFrame to search.
+        df_imdb (pd.DataFrame): The episode metadata DataFrame to search.
+        df_script (pd.DataFrmame): The dialogues of each episode.
         query (str): The string to search for.
     Returns:
         pd.DataFrame: The 5 closest matches to the search string.
@@ -144,7 +147,7 @@ def query_episodes(df_imdb, df_script, query):
     for score, idx in zip(top_results[0], top_results[1]):
         df = pd.concat([df, pd.Series({'Dialogue': corpus[idx],
                                        'Index': int(idx),
-                                       'Score' : score}).to_frame().T],
+                                       'Score': score}).to_frame().T],
                        ignore_index=True)
     # Map to df_imdb
     df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
@@ -168,15 +171,20 @@ def get_selected_row(search_results):
         response (pd.DataFrame): a DataFrame containing all
             metadata for the row selected by the user.
     """
-    search_results = search_results[['SEID','Title', 'averageRating']]
+    search_results = search_results[
+        ['SEID', 'Title', 'averageRating', 'Director', 'Writers']
+    ]
     # Create a grid builder object to process user selections
     grid = GridOptionsBuilder.from_dataframe(search_results)
-    grid.configure_default_column(enablePivot = True,
-                                enableValue = True,
-                                enableRowGroup = True)
-    grid.configure_selection(use_checkbox = True)
-    grid.configure_column('SEID', min_column_width=1)
-    grid.configure_column('averageRating', min_column_width=1)
+    grid.configure_default_column(
+        enablePivot=True,
+        enableValue=True,
+        enableRowGroup=True)
+    grid.configure_selection(use_checkbox=True)
+    grid.configure_column('SEID', header_name="Episode ID",
+                          min_column_width=1)
+    grid.configure_column('averageRating', header_name="Rating",
+                          min_column_width=1)
     grid.configure_auto_height(False)
     gridoptions = grid.build()
     # Load the grid options into an AgGrid object
@@ -184,14 +192,16 @@ def get_selected_row(search_results):
     max_height = 800
     row_height = 30
 
-    response = AgGrid(search_results,
-                      gridOptions = gridoptions,
-                      enable_enterprise_modules = True,
-                      update_mode = GridUpdateMode.MODEL_CHANGED,
-                      data_return_mode =
-                      DataReturnMode.FILTERED_AND_SORTED,
-                      theme="streamlit",
-                      height=min(min_height + len(search_results) * row_height, max_height))
+    response = AgGrid(
+        search_results,
+        gridOptions=gridoptions,
+        enable_enterprise_modules=True,
+        update_mode=GridUpdateMode.MODEL_CHANGED,
+        data_return_mode=DataReturnMode.FILTERED_AND_SORTED,
+        columns_auto_size_mode=ColumnsAutoSizeMode.FIT_CONTENTS,
+        theme="streamlit",
+        height=min(min_height + len(search_results) * row_height, max_height)
+    )
 
     # Convert the AgGrid into a pandas dataframe row
     return pd.DataFrame(response['selected_rows'])
