@@ -191,7 +191,7 @@ def get_final_data(merge=False):
 
     # Fix Typo in Director's Name
     merged_df.lco[merged_df.SEID=="S03E08", "Director"] = "David Steinberg"
-    
+
     scripts.drop(columns=['EpisodeNo'], inplace=True)
     scripts['EpisodeNo'] = scripts.SEID.str[4:].astype(int)
 
