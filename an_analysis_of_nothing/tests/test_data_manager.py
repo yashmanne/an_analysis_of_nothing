@@ -6,7 +6,7 @@ from collections import OrderedDict
 from unittest.mock import patch
 import pandas as pd
 import torch
-from utils import data_manager
+from utils import data_manager, data_constants
 
 
 def mocked_read_csv(*args):
@@ -87,9 +87,9 @@ def mocked_read_csv(*args):
         'Character', 'Dialogue', 'SEID', 'Season', 'EpisodeNo',
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
-    if args[0] == 'https://drive.google.com/uc?id=1VA6wa3lc9LnmJSe8I8EtP82Ooc4SQfwz':
+    if args[0] == data_constants.SCRIPTS_LINK:
         return mock_imdb_data
-    elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
+    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
     else:
         return mock_imdb_data

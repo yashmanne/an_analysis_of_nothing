@@ -6,6 +6,7 @@ import unittest
 from unittest.mock import patch
 import pandas as pd
 from utils.recommender import Recommender, data_manager
+from utils import data_constants
 
 
 def mocked_read_csv(*args):
@@ -93,9 +94,9 @@ def mocked_read_csv(*args):
         'Character', 'Dialogue', 'SEID', 'Season', 'EpisodeNo',
         'Happy', 'Angry', 'Surprise', 'Sad', 'Fear', 'numWords'])
 
-    if args[0] == 'https://drive.google.com/uc?id=1VA6wa3lc9LnmJSe8I8EtP82Ooc4SQfwz':
+    if args[0] == data_constants.SCRIPTS_LINK:
         return mock_imdb_data
-    elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
+    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
     else:
         return mock_imdb_data
@@ -205,9 +206,9 @@ def mocked_read_csv_duplicate(*args):
     mock_script_data = pd.DataFrame(data_scripts_raw, columns=['Character',
     'Dialogue', 'SEID', 'Season', 'EpisodeNo', 'Happy', 'Angry', 'Surprise',
     'Sad', 'Fear', 'numWords'])
-    if args[0] == 'https://drive.google.com/uc?id=1VA6wa3lc9LnmJSe8I8EtP82Ooc4SQfwz': #episode link
+    if args[0] == data_constants.SCRIPTS_LINK:
         return mock_imdb_data
-    elif args[0] == 'https://drive.google.com/uc?id=1zd58WSVxmebSMOMY9zM8myOHqMcKyAX9':
+    elif args[0] == data_constants.EPISODE_LINK:
         return mock_script_data
     else:
         return mock_imdb_data
