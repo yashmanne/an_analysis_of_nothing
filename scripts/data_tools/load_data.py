@@ -33,6 +33,7 @@ import pandas as pd
 from . import data_constants
 # change to import data_constants if running this file.
 
+
 def read_scripts():
     """
     Read in `Seinfeld Chronicles` script data from Kaggle
@@ -190,7 +191,7 @@ def get_final_data(merge=False):
     merged_df.rename(columns={'originalTitle': 'Title'}, inplace=True)
 
     # Fix Typo in Director's Name
-    merged_df.lco[merged_df.SEID=="S03E08", "Director"] = "David Steinberg"
+    merged_df.loc[merged_df.SEID=="S03E08", "Director"] = "David Steinberg"
 
     scripts.drop(columns=['EpisodeNo'], inplace=True)
     scripts['EpisodeNo'] = scripts.SEID.str[4:].astype(int)

@@ -16,8 +16,7 @@ def create_corpus_embeddings(df_script):
     NOTE: Takes 8 minutes to run.
     :param df_script: The scripts DataFrame.
             Must have Dialogue column.
-    Returns:
-        None
+    :return: None
     """
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
     corpus = df_script.Dialogue.values
