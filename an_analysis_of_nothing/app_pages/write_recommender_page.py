@@ -32,7 +32,7 @@ def main():
                 unsafe_allow_html=True)
 
     st.markdown("""<h5 style='text-align: center; color: white;'><br>
-                Please answer the follow prompts to recieve
+                Please answer the follow prompts to receive
                 episode recommendations.<br><br></h5>""",
                 unsafe_allow_html=True)
 
@@ -50,7 +50,7 @@ def main():
     imdb_df_rec = pd.DataFrame(st.session_state.df_imdb)
 
     st.markdown("""<h6 style='text-align: center; color: white;'><br>
-                Enter the title of episodes you've enjoyed.</h6>""",
+                Enter the title(s) of episode(s) you've enjoyed.</h6>""",
                 unsafe_allow_html=True)
 
     title = st.multiselect(
@@ -60,8 +60,8 @@ def main():
     )
 
     st.markdown("""<p style='font-style: italic; text-align:center;'>
-                *If you don't know the title the episode, navigate to the Episode
-                Query page to search for the title*
+                If you don't know the title of the episode, navigate to the Episode
+                Query page to search for the title.
                 </p>""",
                 unsafe_allow_html=True)
 
@@ -88,12 +88,6 @@ def main():
         with col2_1 and col2_3:
             pass
 
-        if len(response) == 0:
-            desc = 'Choose an episode to view its IMDb description!'
-        else:
-            selected_imdb = imdb_df_rec[
-                imdb_df_rec.Title == response['Title'].values[0]]
-
         # Metadata
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
@@ -109,6 +103,6 @@ def main():
     elif not title:
         st.markdown("""<h6 style='text-align: center; color: white;
                 font-style: italic;'><p>
-                Please select at least one episode title to recieve
+                Please select at least one episode title to receive
                 recommendations.</p></h6>""",
                 unsafe_allow_html=True)
