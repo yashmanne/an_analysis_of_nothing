@@ -60,8 +60,8 @@ def main():
     )
 
     st.markdown("""<p style='font-style: italic; text-align:center;'>
-                *If you don't know the title the episode, navigate to the Episode
-                Query page to search for the title*
+                If you don't know the title of the episode, navigate to the Episode
+                Query page to search for the title.
                 </p>""",
                 unsafe_allow_html=True)
 
