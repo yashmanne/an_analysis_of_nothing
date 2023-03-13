@@ -9,6 +9,7 @@ located in the utils folder.
 
 import streamlit as st
 import pandas as pd
+from utils import episode_query
 
 
 def main():
@@ -26,7 +27,7 @@ def main():
         2. title : List of strings
         3. streamlit button : boolean
     """
-    st.markdown("""<h2 style='text-align: center; color: white;'>
+    st.markdown("""<h2 style='text-align: center; color: #031B28;'>
                 Episode Recommender<br></h2>""",
                 unsafe_allow_html=True)
 
@@ -35,7 +36,7 @@ def main():
                 episode recommendations.<br><br></h5>""",
                 unsafe_allow_html=True)
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+    st.markdown("""<h6 style='text-align: center; color: white;'><br>
                 How many episodes do you want recommended to you?</h6>""",
                 unsafe_allow_html=True)
 
@@ -48,7 +49,7 @@ def main():
 
     imdb_df_rec = pd.DataFrame(st.session_state.df_imdb)
 
-    st.markdown("""<h6 style='text-align: left; color: white;'><br>
+    st.markdown("""<h6 style='text-align: center; color: white;'><br>
                 Enter the title of episodes you've enjoyed.</h6>""",
                 unsafe_allow_html=True)
 
@@ -71,18 +72,41 @@ def main():
         pass
 
     recs = st.session_state.recommender
-    left_5, middle_5, right_5 = st.columns([3,1,3])
-    with middle_5:
-        butt = st.button("Submit")
-    with left_5 and right_5:
-        pass
 
-    if butt and title:
+    if title:
+
+        st.markdown("""
+            <h6 style='text-align: center; color: white; text-style: italic;'>
+            Select an episode to learn more.</h6>""",
+            unsafe_allow_html=True)
+
+        col2_1, col2_2, col2_3 = st.columns([.25, 3.5, .25])
         ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
                                                 title_list=title)
-        st.dataframe(ranked_ep[["Title", "Season", "EpisodeNo"]],
-                            use_container_width=True)
-    elif butt and not title:
+        with col2_2:
+            response = episode_query.get_selected_row(ranked_ep)
+        with col2_1 and col2_3:
+            pass
+
+        if len(response) == 0:
+            desc = 'Choose an episode to view its IMDb description!'
+        else:
+            selected_imdb = imdb_df_rec[
+                imdb_df_rec.Title == response['Title'].values[0]]
+
+        # Metadata
+        if len(response) == 0:
+            desc = 'Choose an episode to view its IMDb description!'
+        else:
+            selected_imdb = imdb_df_rec[
+                imdb_df_rec.Title == response['Title'].values[0]]
+            desc = selected_imdb['Description'].values[0]
+        # Metadata
+        st.markdown("""<h3 style='text-align: left; color: #031B28;'>
+                IMDb Episode Description:</h3>""",
+                unsafe_allow_html=True)
+        st.markdown(desc)
+    elif not title:
         st.markdown("""<h6 style='text-align: center; color: white;
                 font-style: italic;'><p>
                 Please select at least one episode title to recieve
