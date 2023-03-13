@@ -153,7 +153,7 @@ def query_episodes(df_imdb, df_script, query):
     df['SEID'] = df.Index.apply(lambda x: df_script.iloc[x].SEID)
     df = df[df.SEID.isin(df_imdb.SEID)]
     df['Title'] = df.Index.apply(lambda x: df_imdb[df_imdb.SEID == df_script.iloc[x]['SEID']]['Title'].values[0])
-    df_imdb = df_imdb[df_imdb.Title.isin(
+    df_imdb = df_imdb.loc[df_imdb.Title.isin(
         df.drop_duplicates(
         subset=['Title']).iloc[0:5].Title
     )]
@@ -227,7 +227,7 @@ def get_characters(df_imdb, df_script, char_choice):
     df_imdb = df_imdb.dropna()
     df_imdb['char_check'] = df_imdb.char_list.apply(
         lambda x: all(char in x for char in char_choice))
-    return df_imdb[df_imdb.char_check == True]
+    return df_imdb.loc[df_imdb.char_check == True]
 
 
 def get_seasons(df_imdb, season_choice):
@@ -241,7 +241,7 @@ def get_seasons(df_imdb, season_choice):
         pd.DataFrame: an IMDb DataFrame of only the episodes that
             are from the selected season(s).
     """
-    return df_imdb[df_imdb.Season.isin(season_choice)]
+    return df_imdb.loc[df_imdb.Season.isin(season_choice)]
 
 
 def get_ratings(df_imdb, rating_choice):
@@ -255,8 +255,8 @@ def get_ratings(df_imdb, rating_choice):
         pd.DataFrame: an IMDb DataFrame of only the episodes that
             are rated within the selected rating range.
     """
-    upper = df_imdb[df_imdb.averageRating <= rating_choice[1]]
-    return upper[upper.averageRating >= rating_choice[0]]
+    upper = df_imdb.loc[df_imdb.averageRating <= rating_choice[1]]
+    return upper.loc[upper.averageRating >= rating_choice[0]]
 
 
 def get_script_from_ep(df_imdb, df_script, episode):
