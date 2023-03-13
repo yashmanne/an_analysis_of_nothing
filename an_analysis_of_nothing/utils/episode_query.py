@@ -175,8 +175,8 @@ def get_selected_row(search_results):
                                 enableValue = True,
                                 enableRowGroup = True)
     grid.configure_selection(use_checkbox = True)
-    grid.configure_column('SEID', min_column_width=1)
-    grid.configure_column('averageRating', min_column_width=1)
+    grid.configure_column('SEID', header_name="Season ID", min_column_width=1)
+    grid.configure_column('averageRating', header_name="Rating", min_column_width=1)
     grid.configure_auto_height(False)
     gridoptions = grid.build()
     # Load the grid options into an AgGrid object
