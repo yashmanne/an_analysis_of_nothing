@@ -50,7 +50,7 @@ def main():
     imdb_df_rec = pd.DataFrame(st.session_state.df_imdb)
 
     st.markdown("""<h6 style='text-align: center; color: white;'><br>
-                Enter the title of episodes you've enjoyed.</h6>""",
+                Enter the title(s) of episode(s) you've enjoyed.</h6>""",
                 unsafe_allow_html=True)
 
     title = st.multiselect(
@@ -109,6 +109,6 @@ def main():
     elif not title:
         st.markdown("""<h6 style='text-align: center; color: white;
                 font-style: italic;'><p>
-                Please select at least one episode title to recieve
+                Please select at least one episode title to receive
                 recommendations.</p></h6>""",
                 unsafe_allow_html=True)

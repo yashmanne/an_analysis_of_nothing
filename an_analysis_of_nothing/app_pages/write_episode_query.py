@@ -86,8 +86,8 @@ def main():
 
         search_string = st.text_input(
             'Enter search criteria: ',
-            label_visibility = 'collapsed',
-            placeholder = """e.g. Mean soup guy, Jerry and Kramer argue, Kramer falls over""")
+            label_visibility ='collapsed',
+            placeholder="""e.g. Mean soup guy, Jerry and Kramer argue, Kramer falls over""")
 
         st.markdown("""
             <h6 style='text-align: center; color: white; text-style: italic;'>
