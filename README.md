@@ -7,7 +7,7 @@
 ## Introduction
 The '90s hit, ***Seinfeld***, is an American sitcom that features four friends, Jerry Seinfeld (Jerry Seinfeld), George Costanza (Jason Alexander), Elaine Benes (Julia Louis-Dreyfus), and Cosmo Kramer (Michael Richards), and their daily lives in New York City. The show follows Jerry, a stand-up comedian, and the lives of his best friend, George, his neighbor, Kramer, and his ex-girlfriend, Elaine, all played by real-life comedians. The show has been characterized as a “show about nothing”. While its popularity peaked in the '90s, the show continues to garner new fans while retaining old ones. It is recognized as one of the most influential sitcoms in TV history.  
 
-Despite the show having cemented its place as one of the greatest sitcoms to date, it can be difficult for *Seinfeld* fans, as well as those curious about the show, to search and discover certain episode and series characteristics when their only resource is manual web-searching. To this, we develop an interactive web application that covers the extensive capabilities of Wikipedia, IMDb, and Netflix all in one–acting as a descriptive and exploratory tool for users to query specific scenes, visualize character quirks, and receive recommendations for future watches. We hope to not only uncover new insights about the classic show, but also provide a centralized **tool** for fans to access and explore all things *Seinfeld*.
+Despite the show having cemented its place as one of the greatest sitcoms to date, it can be difficult for *Seinfeld* fans, as well as those curious about the show, to search and discover certain episode and series characteristics when their only resource is manual web-searching. To this, we develop an interactive web application that covers the extensive capabilities of Wikipedia, IMDb, and Netflix all in one–acting as a descriptive and exploratory tool for users to query specific scenes, visualize character quirks, and receive recommendations for future watches. We hope to not only uncover new insights about the classic show, but also provide a centralized **tool** for fans to access and explore all things *Seinfeld*!
 
 Public Website: **[nothing.streamlit.app](https://nothing.streamlit.app/)**
 
@@ -31,14 +31,14 @@ Public Website: **[nothing.streamlit.app](https://nothing.streamlit.app/)**
 <a id="tasks-of-interest"></a>
 ## Tasks of Interest
 - **Interactive Visual Homepage**:
-  - Chronicles appearances of each character across the series across an interactive visual dashboard.
+  - Chronicles number of dialogue lines for each character across the series across an interactive visual dashboard.
   - Showcases change in episode rating across the series.
 - **Search Query**:
   - Allows users to search for specific episodes based on partially remembered dialogue snippets or keywords.
   - Includes additional ***advanced search*** functionality for filtering search based on season, episode rating, and desired characters.
   - Showcases multiple visualizations detailing the emotional distribution of the episode among the main characters.
 - **Episode Recommender**:
-  - Finds similar episode(s) to a user's favorite(s) based on dialogue, episode description, IMDb keywords, episode summary, emotional distribution of each character, appearances of character, and the IMDb audience rating.
+  - Finds similar episode(s) to a user's favorite(s) based on dialogue, episode description, IMDb keywords, episode summary, emotional distribution of each character, the number of lines for each character, and the IMDb audience rating.
   
 <a id="repository-structure"></a>
 ## Repository Structure
@@ -60,6 +60,7 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   │   │   │   ├── tensor_9.npy
 │   │   │   ├── metadata.csv
 │   │   │   ├── scripts.csv
+│   │   │   ├── README.md
 │   │   ├── images/
 │   │   │   ├── analysis_of_nothing.png
 │   │   │   ├── elaine.png
@@ -73,6 +74,7 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   │   │   ├── kramer_.jpg
 │   │   │   ├── lead.png
 │   │   │   ├── newman_.jpg
+│   │   │   ├── README.md
 │   ├── tests/
 │   │   ├── __init__.py
 │   │   ├── mock_functions.py
@@ -112,7 +114,6 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   │   ├── sentiment.py
 │   ├── get_final_data.py
 │   ├── README.md
-│   │   ├── 
 ├── .gitignore
 ├── environment.yml
 ├── .gitignore
@@ -168,10 +169,8 @@ Please note that this code not only cleans & merges the data, but also calculate
 
 More details can be found \[ here \] \(). @ADITI
 
-
 <a id="application"></a>
 ### Application
-
 We generated our application through the open-source `streamlit` package. A local application can be generated with the code:
 ```bash
 conda activate nothing
@@ -179,4 +178,7 @@ streamlit run an_analysis_of_nothing/app.py
 ```
 This will pop up a browser window with the functioning web-application.
 More details can be found \[HERE\]\(\) @ ADITI.
-<a id="data"></a>
+
+<a id="examples"></a>
+## Examples
+More details on how to run our code can be found [here](./examples/README.md).
