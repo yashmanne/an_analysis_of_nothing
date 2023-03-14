@@ -203,14 +203,6 @@ def mocked_read_csv_large(*args):
     else:
         return mock_imdb_data
 
-
-class TestEpisodeQuery(unittest.TestCase):
-    """
-    Test class for testing episode_query() method
-    """
-    def setUp(self):
-        pass
-
 class TestGetScriptFromEp(unittest.TestCase):
     """
     Test class for testing get_script_from_ep() method
