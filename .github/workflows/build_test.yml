@@ -3,32 +3,34 @@ name: build_test
 on:
   push:
     branches:
-      - qa_branch
       - qa_chandler
       - main
   pull_request:
     branches:
-      - qa_branch
       - qa_chandler
       - main
 
 jobs:
   build_test:
     runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        python-version: ["3.9", "3.10"]
+
     defaults:
       run:
         shell: bash -el {0}
 
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        python-version: ["3.9", "3.10"]
+
     steps:
       - uses: actions/checkout@v3
+
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
         with:
           python-version: ${{ matrix.python-version }}
+
       - name: Set up conda
         uses: conda-incubator/setup-miniconda@v2
         with:
@@ -37,28 +39,31 @@ jobs:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
           auto-activate-base: false
+
       - name: Install additional development dependencies
         run: |
           conda install --yes coverage
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
             pip install coverage-lcov
           fi
+
       - name: Unit tests
         run: |
           cd an_analysis_of_nothing
           coverage run -m unittest discover
           coverage report
-          if [ "${{ matrix.os }}" = "windows-latest" ]; then
-            coverage lcov --rcfile=.coveragerc --output-file=coverage.lcov
+          if [ "${{ matrix.os }}" == "windows-latest" ]; then
+            coverage lcov > coverage.lcov
           else
-            coverage lcov --rcfile=.coveragerc --output-file=an_analysis_of_nothing/coverage.lcov
+            coverage lcov
           fi
+
       - name: Report code coverage to Coveralls
         uses: coverallsapp/github-action@master
         with:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           base-path: an_analysis_of_nothing
-          path-to-lcov: ${{ matrix.os == 'windows-latest' && './' || 'an_analysis_of_nothing/' }}coverage.lcov
+          path-to-lcov: ${{ matrix.os }}-latest/coverage.lcov
           flag-name: run ${{ join(matrix.*, ' - ') }}
           parallel: true
 
@@ -68,4 +73,10 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Coveralls Finished
-        uses: coveralls...
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          parallel-finished: true
+          # This says finish the parallel runs that we did above
+          # and send to Coveralls.
+          carryforward: "run-3.9,run-3.10"
