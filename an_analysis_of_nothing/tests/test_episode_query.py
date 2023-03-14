@@ -530,7 +530,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = [1]
         rating_choice = [7,10]
         char_choice = ['JERRY']
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertEqual(True, filtered_df.iloc[0]['char_check'])
         self.assertEqual(1, filtered_df.iloc[0]['Season'])
@@ -547,7 +547,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = [1]
         rating_choice = None
         char_choice = ['JERRY']
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertEqual(True, filtered_df.iloc[0]['char_check'])
         self.assertNotIn(2, filtered_df['Season'].tolist())
@@ -564,7 +564,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = [1]
         rating_choice = None
         char_choice = None
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertNotIn(4, filtered_df['Season'].tolist())
         self.assertEqual(len(filtered_df['averageRating']), 2)
@@ -580,7 +580,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = None
         rating_choice = [8,10]
         char_choice = None
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertIn(4, filtered_df['Season'].tolist())
         self.assertEqual(len(filtered_df['averageRating']), 2)
@@ -596,7 +596,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = None
         rating_choice = None
         char_choice = ['KRAMER']
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertIn(2, filtered_df['EpisodeNo'].tolist())
         self.assertEqual(len(filtered_df['averageRating']), 1)
@@ -612,7 +612,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = None
         rating_choice = [8,8.5]
         char_choice = ['GEORGE']
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertIn(4, filtered_df['Season'].tolist())
         self.assertEqual(len(filtered_df['averageRating']), 1)
@@ -628,7 +628,7 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = [1, 4]
         rating_choice = [8,9]
         char_choice = None
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _  = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
         self.assertIn(1, filtered_df['Season'].tolist())
         self.assertIn(4, filtered_df['Season'].tolist())
@@ -645,15 +645,29 @@ class TestFilterSearchResults(unittest.TestCase):
         season_choice = None
         rating_choice = None
         char_choice = None
-        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+        filtered_df, _ = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
-        print(filtered_df.head())
-        print(search_results.head())
         self.assertIn(1, filtered_df['Season'].tolist())
         self.assertIn(2, filtered_df['EpisodeNo'].tolist())
         self.assertIn(4, filtered_df['Season'].tolist())
         self.assertEqual(len(filtered_df['averageRating']), 3)
         pd.testing.assert_frame_equal(filtered_df, imdb)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_get_selected_row(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = None
+        rating_choice = None
+        char_choice = None
+        _, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        rows = episode_query.get_selected_row(search_results)
+        self.assertIsInstance(rows, pd.DataFrame)
         
 
         
