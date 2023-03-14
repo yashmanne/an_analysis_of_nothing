@@ -1,10 +1,6 @@
 """
-This script contains the contents of the Home page
+Code that executes the contains the contents of the Home page
 and is called by the main app.py script.
-
-This script requires Streamlit, pandas, numpy, and
-plotly.express be installed. This script uses functions
-contained in the data_manager.py located in the utils folder.
 """
 
 import streamlit as st
@@ -13,19 +9,16 @@ import plotly.express as px
 import numpy as np
 from utils import data_manager, recommender, episode_query
 
-
+# pylint: disable-msg=too-many-statements
 def main():
     """
-    This function executes the Streamlit formatted HTML
+    Executes the Streamlit formatted HTML
     displayed on the Home webpage and displays interactive visualizations.
+    :param: None
 
-    Arguments: None
-    Returns: None
-
-    User Inputs
-    ------------
-        1. seasons : int
+    :return: None
     """
+    # Display title, description, and main image
     st.markdown("""<h2 style='text-align: center; color: #031B28;'>
             Home</h2>""",
             unsafe_allow_html=True)
@@ -44,7 +37,9 @@ def main():
 
     try:
         # Load dataframes into session state once
+        # pylint: disable-msg=line-too-long
         if ("df_imdb" not in st.session_state) or ("df_dialog" not in st.session_state):
+            # pylint: disable-msg=line-too-long
             st.session_state.df_imdb, st.session_state.df_dialog = data_manager.load_data()
     except FileNotFoundError:
         st.error("There was an issue loading data")
@@ -53,7 +48,7 @@ def main():
     imdb_df = pd.DataFrame(st.session_state.df_imdb)
 
     try:
-        # Load recommender into session state once
+        # Load recommender and query into session state once
         if "recommender" not in st.session_state:
             st.session_state.recommender = recommender.Recommender(
                 imdb_df, dialog_df)
@@ -66,6 +61,7 @@ def main():
                 Select Season(s)</h6>""",
                 unsafe_allow_html=True)
 
+    # User selected seasons
     seasons = st.multiselect(
         'Select Season(s)',
         label_visibility="collapsed",
@@ -77,6 +73,7 @@ def main():
                 Lines Spoken by Character and Season</h4>""",
                 unsafe_allow_html=True)
 
+    # Calculate lines spoken by character and season
     selected_seasons = np.in1d(dialog_df["Season"], seasons)
     season_df = dialog_df[selected_seasons]
 
@@ -84,6 +81,7 @@ def main():
     characters = np.in1d(season_df["Character"], main_four )
     character_df = season_df[characters]
 
+    # Display as histogram
     histogram = px.histogram(
         data_frame = character_df,
         x = "Character",
@@ -108,6 +106,7 @@ def main():
 
     st.plotly_chart(histogram)
 
+    # Character image divider
     one, two, three, four = st.columns(4)
     with one:
         st.image('./static/images/jerry.png', width=190)
@@ -122,9 +121,11 @@ def main():
                 Average Episode Rating</h4>""",
                 unsafe_allow_html=True)
 
+    # Filter IMDb by user selected seasons
     chosen_seasons = np.in1d(imdb_df["Season"], seasons)
     imdb_season_df = imdb_df[chosen_seasons]
 
+    # Display average rating by season ID
     line_chart = px.line(
         data_frame = imdb_season_df,
         x = "SEID",

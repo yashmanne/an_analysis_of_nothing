@@ -1,10 +1,6 @@
 """
-This script contains the contents of the Episode Recommender
+Code that executes the contents of the Episode Recommender
 page and is called by the main app.py script.
-
-This script requires Streamlit and pandas be installed.
-This script uses functions contained in the recommender.py
-located in the utils folder.
 """
 
 import streamlit as st
@@ -14,19 +10,14 @@ from utils import episode_query
 
 def main():
     """
-    This function executes the Streamlit formatted HTML
-    displayed on the Episode Recommender webpage and utilizes user
+    Executes the Streamlit formatted HTML
+    displayed on the Episode Recommender webpage and prompts user
     inputs to calculate recommended episodes.
+    :param: None
 
-    Arguments: None
-    Returns: None
-
-    User Inputs
-    ------------
-        1. num_episodes : int
-        2. title : List of strings
-        3. streamlit button : boolean
+    :return: None
     """
+    # Title and description
     st.markdown("""<h2 style='text-align: center; color: #031B28;'>
                 Episode Recommender<br></h2>""",
                 unsafe_allow_html=True)
@@ -40,6 +31,7 @@ def main():
                 How many episodes do you want recommended to you?</h6>""",
                 unsafe_allow_html=True)
 
+    # Number of episodes user wants recommended
     num_ep = st.selectbox(
         "How many episodes do you want recommended to you?",
         label_visibility="collapsed",
@@ -47,12 +39,14 @@ def main():
         index=0
         )
 
+    # Load data
     imdb_df_rec = pd.DataFrame(st.session_state.df_imdb)
 
     st.markdown("""<h6 style='text-align: center; color: white;'><br>
                 Enter the title(s) of episode(s) you've enjoyed.</h6>""",
                 unsafe_allow_html=True)
 
+    # Episodes users enjoy
     title = st.multiselect(
         label="Enter the title of episodes you've enjoyed.",
         label_visibility="collapsed",
@@ -71,6 +65,7 @@ def main():
     with left_4 and right_4:
         pass
 
+    # Load recommender
     recs = st.session_state.recommender
 
     if title:
@@ -80,6 +75,7 @@ def main():
             Select an episode to learn more.</h6>""",
             unsafe_allow_html=True)
 
+        # Display table of recommended episodes
         col2_1, col2_2, col2_3 = st.columns([.25, 3.5, .25])
         ranked_ep = recs.find_closest_episodes(num_episodes=num_ep,
                                                 title_list=title)
@@ -88,14 +84,13 @@ def main():
         with col2_1 and col2_3:
             pass
 
-        # Metadata
+        # Display selected episode's IMDb description
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
         else:
             selected_imdb = imdb_df_rec[
                 imdb_df_rec.Title == response['Title'].values[0]]
             desc = selected_imdb['Description'].values[0]
-        # Metadata
         st.markdown("""<h3 style='text-align: left; color: #031B28;'>
                 IMDb Episode Description:</h3>""",
                 unsafe_allow_html=True)

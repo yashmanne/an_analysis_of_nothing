@@ -1,20 +1,19 @@
 """
-This script contains the contents of the About Us page
+Code that executes the contents of the About Us page
 and is called by the main app.py script.
-
-This script requires that Streamit is installed.
 """
 
 import streamlit as st
 
 def main():
     """
-    This function executes the Streamlit formatted HTML
+    Executes the Streamlit formatted HTML
     displayed on the About Us webpage.
+    :param: None
 
-    Arguments: None
-    Returns: None
+    :return: None
     """
+    # Display page title and description
     st.markdown("""<h2 style='text-align: center; color: #031B28;'>
                 About Us<br></h2>""",
                 unsafe_allow_html=True)
@@ -29,6 +28,7 @@ def main():
                 <br><br></h5>""",
                 unsafe_allow_html=True)
 
+    # Display the image, name, and role of each creater
     left_2, middle_2, right_2 = st.columns([1, 0.09, 1])
     with left_2:
         st.image('./static/images/kramer_.jpg', width=314)

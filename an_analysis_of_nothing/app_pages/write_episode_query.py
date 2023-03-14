@@ -1,8 +1,6 @@
 """
-This script contains the contents of the Episode Querying
+Code that executes the contents of the Episode Querying
 page and is called by the main app.py script.
-This script uses functions contained in the episode_query.py
-located in the utils folder.
 """
 
 import pandas as pd
@@ -14,18 +12,17 @@ from utils import episode_query
 
 def main():
     """
-    This function executes the Streamlit formatted HTML
-    displayed on the Episode Querying webpage and utilizes user
-    inputs to search for and display user input.
-    Arguments: None
-    Returns: None
+    Executes the Streamlit formatted HTML
+    displayed on the Episode Querying webpage based on user inputs.
+    param: None
+
+    return: None
     """
-    # Intro text/logo
     # Load data
     df_imdb = pd.DataFrame(st.session_state.df_imdb)
     df_script = pd.DataFrame(st.session_state.df_dialog)
 
-    # Titles, image, search bar
+    # Titles and description
     st.markdown("""<h2 style='text-align: center; color: #031B28;'>
                         Episode Querying</h2>""",
                         unsafe_allow_html=True)
@@ -37,6 +34,7 @@ def main():
             <br><br></h5>""",
             unsafe_allow_html=True)
 
+    # Display gif
     left_5, middle_5, right_5 = st.columns([1.65,5,1])
     with middle_5:
         st.image('./static/images/elaine_typing.gif')
@@ -78,6 +76,7 @@ def main():
     if 'Speaking Character(s)' in selected_filters:
         char_choice = st.sidebar.multiselect('Speaking Characters',
                                              characters)
+
     # Search functionality
     try:
         st.markdown("""<h6 style='text-align: center; color: white;'><br>
@@ -87,7 +86,7 @@ def main():
         search_string = st.text_input(
             'Enter search criteria: ',
             label_visibility ='collapsed',
-            placeholder="""e.g. Mean soup guy, Jerry and Kramer argue, Kramer falls over""")
+            placeholder="""e.g. Mean soup guy, Kramer falls over""")
 
         st.markdown("""
             <h6 style='text-align: center; color: white; text-style: italic;'>
@@ -102,7 +101,7 @@ def main():
                                                         char_choice,
                                                         df_imdb,
                                                         df_script)
-        # Display
+        # Display table
         col2_1, col2_2, col2_3 = st.columns([.25, 3.5, .25])
         with col2_2:
             if search_string:
@@ -114,15 +113,13 @@ def main():
         with col2_1 and col2_3:
             pass
 
-        # Descriptive stats
-        # Default
+        # Set IMDb description of user selected episode
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
         else:
             selected_imdb = df_imdb[
                 df_imdb.Title == response['Title'].values[0]]
             desc = selected_imdb['Description'].values[0]
-        # Metadata
         st.markdown("""<h3 style='text-align: left; color: #031B28;'>
                 IMDb Episode Description:</h3>""",
                 unsafe_allow_html=True)
@@ -131,11 +128,13 @@ def main():
         st.error("""There was an issue processing your selections for
                     searching functionality."""
                 )
+
     # Analysis functionality
     try:
 
         if len(response) != 0:
 
+            # Sentiment of episode bar chart
             st.markdown("""<h4 style='text-align: center; color: #031B28;'>
                 <br>Average Weighted Sentiment</h4>""",
                 unsafe_allow_html=True)
@@ -153,6 +152,7 @@ def main():
                                    'Surprise', 'Sad',
                                    'Fear', 'SEID']].groupby('SEID').sum()
             grouped_df = grouped_df.reset_index()
+
             # Melt the DataFrame to create a long format
             melted_df = grouped_df.melt(
                 id_vars='SEID',
@@ -186,6 +186,7 @@ def main():
 
             st.plotly_chart(fig, use_container_width=True)
 
+            # Sentiment by character sunburst chart
             st.markdown("""<h4 style='text-align: center; color: #031B28;'>
                 Average Sentiment by Character<br><br></h4>""",
                 unsafe_allow_html=True)
