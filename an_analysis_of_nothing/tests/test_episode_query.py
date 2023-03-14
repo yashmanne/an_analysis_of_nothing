@@ -32,6 +32,12 @@ class MockObject:
     def __getattr__(self, name):
         if name == 'query':
             return load_corpus()
+        return ''
+    def print(self):
+        """
+        Print the class name
+        """
+        print('MockObject')
 
 
 def load_corpus():
