@@ -152,3 +152,50 @@ class TestQueryTensor(unittest.TestCase):
         """
         tensor = data_manager.get_episode_query_tensors()
         self.assertIsInstance(tensor, torch.Tensor)
+
+
+class TestDataManagerErrors(unittest.TestCase):
+    """
+    Test class for testing data manager module error handling
+    """
+    # Mocking pandas read_csv function
+    # def mocked_read_csv(*args, **kwargs):
+    #     if args[0] == 'file1.csv':
+    #         return pd.DataFrame({'col1': [1, 2, 3], 'col2': ['a', 'b', 'c']})
+    #     elif args[0] == 'file2.csv':
+    #         return pd.DataFrame({'col1': [4, 5, 6], 'col2': ['d', 'e', 'f']})
+
+    def setUp(self):
+        pass
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv)
+    def test_get_tensor(self, _):
+        """
+        Test loading data using mocked data.
+        """
+        with self.assertRaises(TypeError):
+            data_manager.get_episode_query_tensors('ten')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv)
+    def test_line_counts(self, _):
+        """
+        Test loading data using mocked data.
+        """
+        with self.assertRaises(TypeError):
+            data_manager.get_line_counts(['one', 'two', 'three'])
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv)
+    def test_line_counts_episode(self, _):
+        """
+        Test loading data using mocked data.
+        """
+        _, script = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            data_manager.get_line_counts_per_episode(script, 'kramer')
+
+        with self.assertRaises(TypeError):
+            data_manager.get_line_counts_per_episode('script', ['kramer'])
