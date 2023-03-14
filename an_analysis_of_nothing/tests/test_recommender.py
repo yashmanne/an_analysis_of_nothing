@@ -96,10 +96,9 @@ def mocked_read_csv(*args):
 
     if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
-    elif args[0] == data_constants.EPISODE_LINK:
-        return mock_imdb_data
     else:
         return mock_imdb_data
+    
 
 def mocked_read_csv_duplicate(*args):
     """
@@ -208,10 +207,9 @@ def mocked_read_csv_duplicate(*args):
     'Sad', 'Fear', 'numWords'])
     if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
-    elif args[0] == data_constants.EPISODE_LINK:
-        return mock_imdb_data
     else:
         return mock_imdb_data
+   
 
 class TestDataRecommender(unittest.TestCase):
     """

@@ -211,61 +211,6 @@ class TestEpisodeQuery(unittest.TestCase):
     def setUp(self):
         pass
 
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_query_episodes(self, mock):
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     episodes = episode_query.query_episodes(imdb, 'Woman from michigan')
-    #     pd.testing.assert_frame_equal(episodes, imdb)
-
-    #     episodes = episode_query.query_episodes(imdb, 'Jerry goes to a birthday party')
-    #     pd.testing.assert_frame_equal(episodes, imdb)
-
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_query_episodes_error(self, mock):
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     imdb.rename(columns={"Summaries": "summaries"})
-    #     episodes = episode_query.query_episodes(imdb, 'Woman from michigan')
-    #     pd.testing.assert_frame_equal(episodes, imdb)
-
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_query_episodes_ag_obj(self, mock):
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     episodes = episode_query.query_episodes(imdb, 'Woman from michigan')
-    #     ag_obj = episode_query.get_selected_row(episodes)
-    #     print(ag_obj)
-    #     self.assertIsInstance(ag_obj, pd.DataFrame)
-
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_transform(self, mock):
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     new_imdb = episode_query.map_imdb_to_scripts(imdb, script)
-    #     self.assertIn('SEID', new_imdb.columns)
-
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_get_script_episode(self, _):
-    #     """
-    #     Smoke test for getting script from episode list
-    #     """
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     selected_dialogue = episode_query.get_script_from_ep(imdb, script, "Good News, Bad News")
-    #     self.assertIn('S01E01', selected_dialogue.SEID.unique())
-    #     self.assertEqual(len(selected_dialogue), 3)
-
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_get_script_fake_episode(self, _):
-    #     """
-    #     Smoke test for getting script from episode list
-    #     """
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     selected_dialogue = episode_query.get_script_from_ep(imdb, script, "Good Bad News")
-    #     self.assertEqual(len(selected_dialogue), 0)
-
 class TestGetScriptFromEp(unittest.TestCase):
     """
     Test class for testing get_script_from_ep() method
@@ -352,16 +297,6 @@ class TestGetRatings(unittest.TestCase):
         self.assertIn('S01E01', eps.SEID.unique())
         self.assertEqual(len(eps), 1)
 
-    # @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv)
-    # def test_error(self, _):
-    #     """
-    #     Smoke test for getting script from episode list
-    #     """
-    #     # mock.return_value = self.mock_imdb_data
-    #     imdb, script = data_manager.load_data()
-    #     imdb = 3
-    #     selected_dialogue = episode_query.get_script_from_ep(imdb, script, "Good Bad News")
-    #     pd.testing.assert_frame_equal(selected_dialogue, script)
 class TestGetSeasons(unittest.TestCase):
     """
     Test class for the get_seasons() method
@@ -662,6 +597,3 @@ class TestFilterSearchResults(unittest.TestCase):
                           char_choice, imdb, script)
         rows = episode_query.get_selected_row(search_results)
         self.assertIsInstance(rows, pd.DataFrame)
-        
-
-        
