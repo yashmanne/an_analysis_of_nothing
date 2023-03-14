@@ -24,3 +24,5 @@ dependencies:
       - sentence_transformers
       - streamlit-option-menu
       - streamlit-aggrid
+      - pylint
+      
