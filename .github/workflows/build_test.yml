@@ -134,8 +134,7 @@ jobs:
         # This says finish the parallel runs that we did above
         # and send to Coveralls.
         carryforward: "run-3.9,run-3.10"
-  jobs:
-
+        
   # Each job gets a name. This one builds/tests all branches.
   build_macos:
 
