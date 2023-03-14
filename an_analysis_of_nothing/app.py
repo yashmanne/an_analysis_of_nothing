@@ -1,8 +1,6 @@
 """
-This script creates and runs the streamlit website,
-and calls each subpage to be run when selected.
-
-This script requires Streamlit to be installed.
+Code that manages the theme of the website,
+page navigation sidebar, and pages.
 """
 import os
 
@@ -14,15 +12,16 @@ from app_pages import write_recommender_page
 from app_pages import write_about_page
 from app_pages import write_episode_query
 
+# Set current working directory to .
 cwd = os.getcwd()
 base_path = cwd.split("an_analysis_of_nothing", maxsplit=1)[0]
 curr_path = base_path + \
     'an_analysis_of_nothing/an_analysis_of_nothing/'
-
 os.chdir(curr_path)
 
 st.set_page_config(layout="centered")
 
+# Set color and image theme of webiste
 st.markdown("""<style>
             [data-testid="stAppViewContainer"] > .main {
                 background-image: url("https://www.pixelstalk.net/wp-content/uploads/images1/Free-download-central-park-backgrounds.jpg");
@@ -42,8 +41,10 @@ st.markdown("""<style>
             }
             </style>""", unsafe_allow_html=True)
 
+# Main image
 st.image('./static/images/analysis_of_nothing.png')
 
+# Configure navigation sidebar
 with st.sidebar:
     selected = option_menu(
         menu_title="Main Menu",
@@ -56,6 +57,7 @@ with st.sidebar:
         }
     )
 
+# Run specific webpage scripts when selected
 if selected == "Home":
     write_home_page.main()
 
