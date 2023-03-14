@@ -3,10 +3,12 @@ name: build_test
 on:
   push:
     branches:
+      - qa_branch
       - qa_chandler
       - main
   pull_request:
     branches:
+      - qa_branch
       - qa_chandler
       - main
 
