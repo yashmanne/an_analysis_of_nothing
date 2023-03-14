@@ -78,7 +78,6 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   ├── tests/
 │   │   ├── __init__.py
 │   │   ├── mock_functions.py
-│   │   ├── test_app.py                 ## REMOVE?
 │   │   ├── test_data_manager.py
 │   │   ├── test_episode_query.py
 │   │   ├── test_recommender.py
