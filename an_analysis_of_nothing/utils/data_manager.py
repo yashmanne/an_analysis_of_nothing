@@ -1,7 +1,5 @@
-"""
-Contains functions that count/modify original data.
-"""
 from collections import OrderedDict
+from typing import Tuple, List, Optional
 import numpy as np
 import pandas as pd
 import torch
@@ -9,7 +7,7 @@ import torch
 from . import data_constants
 
 
-def load_data():
+def load_data() -> Tuple[pd.DataFrame, pd.DataFrame]:
     """
     Load cleaned scripts and metadata from Google Drive.
 
@@ -24,13 +22,15 @@ def load_data():
     return meta, scripts
 
 
-def get_episode_query_tensors(num_shards=10):
+def get_episode_query_tensors(num_shards: int = 10) -> torch.Tensor:
     """
     Load in pre-computed feature vectors for cosine similarity.
 
     :param num_shards: number of times the raw feature vector
                        was sharded to allow Git tracking.
     """
+    if not isinstance(num_shards, int):
+        raise TypeError("num_shards must be an integer")
     all_tensors = []
     for i in range(num_shards):
         npy_tensor = np.load(f"./static/data/dialogue_tensors/tensor_{i}.npy")
@@ -39,15 +39,18 @@ def get_episode_query_tensors(num_shards=10):
     torch_tensor = torch.from_numpy(npy_2d)
     return torch_tensor
 
-def get_line_counts(scripts):
+
+def get_line_counts(scripts: pd.DataFrame) -> OrderedDict:
     """
     Get line counts for each character in the data.
 
     :param scripts: Pandas DataFrame containing at least these columns:
                  'Character', 'Dialogue', 'SEID' representing the script data.
-                 RAISE VALUE ERROR ELSE
     :return: number of lines dialogue for each unique characters
     """
+    if not isinstance(scripts, pd.DataFrame):
+        raise TypeError("scripts must be an pd.DataFrame")
+
     # all characters
     list_chars = scripts.Character.str.split(" & ").to_list()
     line_counts = {}
@@ -63,17 +66,27 @@ def get_line_counts(scripts):
     return final_counts
 
 
-def get_line_counts_per_episode(scripts, characters=None):
+def get_line_counts_per_episode(
+        scripts: pd.DataFrame,
+        characters: Optional[List[str]] = None) -> OrderedDict:
     """
     Get line counts for main 4 characters in the data for each episode.
 
     :param scripts: Pandas DataFrame containing at least these columns:
                  'Character', 'Dialogue', 'SEID' representing the script data.
-                 RAISE VALUE ERROR ELSE
-    :param characters: set of characters
+    :param characters: set of characters, defaults to
+        {'JERRY', 'GEORGE', 'ELAINE', 'KRAMER'}
+    :raise TypeError: if scripts is not a
+        Pandas DataFrame or if characters is not a set or None
 
     :return: number of lines dialogue for each unique characters
     """
+    if not isinstance(scripts, pd.DataFrame):
+        raise TypeError("Input scripts must be a Pandas DataFrame")
+
+    if characters is not None and not isinstance(characters, list):
+        raise TypeError("Input characters must be a list or None")
+
     if characters is None:
         characters = {'JERRY', 'GEORGE', 'ELAINE', 'KRAMER'}
 
