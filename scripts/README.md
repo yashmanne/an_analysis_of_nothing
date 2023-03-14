@@ -11,3 +11,4 @@ This folder contains the scripts used to clean the raw data as well as some addi
     * Cleaned Metadata: `../an_analysis_of_nothing/static/data/metadata.csv`
     * Cleaned Scripts With Emotions: `../an_analysis_of_nothing/static/data/scripts.csv`
     * Sharded Feature Vectors: `../an_analysis_of_nothing/static/data/dialogue_tensors/tensor_*.npy`
+LINK EXAMPLEHERERE ERE
