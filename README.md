@@ -94,12 +94,23 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   ├── Component_Specification.md
 │   ├── Episode_Query_Interaction.png
 │   ├── Episode_Recommender_Interaction.png
+│   ├── Final_Presentation.pdf
 │   ├── Functional_Specification.md
 │   ├── General_Analytics_Interaction.png
 │   ├── README.md
 │   ├── Sequence_Diagram.png
-│   ├── Technology Review.pptx          ## Rename and change to PDF
+│   ├── Technology_Review.pdf
 ├── examples/
+│   │   ├── images/
+│   │   │   ├── README.md
+│   │   │   ├── site_nav_1.png
+│   │   │   ├── site_nav_2.png
+│   │   │   ├── site_nav_3.png
+│   │   │   ├── site_nav_4.png
+│   │   │   ├── site_nav_5.png
+│   │   ├── data.ipynb
+│   │   ├── README.md
+│   │   ├── site_navigation.md
 │   ├── README.md
 ├── scripts/
 │   ├── data_tools/
@@ -165,8 +176,9 @@ python ./scripts/get_final_data.py
 conda deactivate
 ```
 Please note that this code not only cleans & merges the data, but also calculates the emotional distribution of each dialogue line and generates a pretrained BERT vector embedding for each line. This script may take up to 3 hours.
+More details can be found [here](./scripts/README.md) and [here](./examples/data.ipynb). 
 
-More details can be found \[ here \] \(). @ADITI
+Details about the data variables can be found [here](./an_analysis_of_nothing/static/data/README.md).
 
 <a id="application"></a>
 ### Application
@@ -176,10 +188,10 @@ conda activate nothing
 streamlit run an_analysis_of_nothing/app.py
 ```
 This will pop up a browser window with the functioning web-application.
-More details can be found \[HERE\]\(\) @ ADITI.
+More details can be found [here](./examples/README.md).
 
 <a id="examples"></a>
 ## Examples
-A demonstration of our working application can be seen [here](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md).
+A video demonstration of our working application can be seen [here](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md).
 
 More details on how to run our code can be found [here](./examples/README.md).

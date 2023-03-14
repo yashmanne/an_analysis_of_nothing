@@ -18,6 +18,7 @@ def main():
 
     return: None
     """
+    # pylint:disable=too-many-locals, too-many-statements
     # Load data
     df_imdb = pd.DataFrame(st.session_state.df_imdb)
     df_script = pd.DataFrame(st.session_state.df_dialog)

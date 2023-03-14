@@ -1,14 +1,12 @@
 """
 Code for recommending new episodes.
 """
-
+from typing import List, Union
 import pandas as pd
 import numpy as np
-
 from sentence_transformers import SentenceTransformer
 from sklearn.metrics.pairwise import cosine_similarity
 from sklearn.preprocessing import MinMaxScaler
-
 from . import data_manager
 
 
@@ -17,20 +15,41 @@ class Recommender:
     Class to encapsulate recommendation features.
     """
 
-    def __init__(self, meta, scripts, weights=None):
+    def __init__(self, meta: pd.DataFrame, scripts: pd.DataFrame,
+                 weights: Union[None, List[float]] = None) -> None:
         """
         Initialize recommender with model, data, and feature vectors.
         Note: Takes 1 MIN to initialize
         :param meta: DataFrame with metadata.
-            MUST contain these columns:
+            MUST contain these columns: 'Title', 'keyWords', 'Summaries',
+            'averageRating', 'numVotes'.
         :param scripts: DataFrame with dialogue data.
-            MUST contain these columns:
-        :param weights: np.array, relative importance of
+            MUST contain these columns: 'SEID', 'Dialogue', 'Happy',
+            'Angry', 'Surprise', 'Sad', 'Fear'.
+        :param weights: list of floats, relative importance of
             [dialogues, keywords, first summary, average rating,
             numVotes, emotions, number of lines].
 
         :return: None
         """
+        if not isinstance(meta, pd.DataFrame):
+            raise TypeError("Argument 'meta' must be a pandas DataFrame")
+        if not isinstance(scripts, pd.DataFrame):
+            raise TypeError("Argument 'scripts' must be a pandas DataFrame")
+        if weights is not None and not isinstance(weights, list):
+            raise TypeError("Argument 'weights' must be a list of floats")
+
+        required_columns = ['Title', 'keyWords', 'Summaries', 'averageRating',
+                            'numVotes']
+        if not all(col in meta.columns for col in required_columns):
+            raise ValueError(f"Argument 'meta' must contain columns: "
+                             f"{', '.join(required_columns)}")
+        required_columns = ['SEID', 'Dialogue', 'Happy', 'Angry', 'Surprise',
+                            'Sad', 'Fear']
+        if not all(col in scripts.columns for col in required_columns):
+            raise ValueError(f"Argument 'scripts' must contain columns: "
+                             f"{', '.join(required_columns)}")
+
         self.meta = meta
         self.scripts = scripts
         self.model = SentenceTransformer(
@@ -38,10 +57,9 @@ class Recommender:
         self.default = weights if weights else [1, 1, 0.8, 0.5, 0.2, 0.2, 0.4]
         self.weights = self.default
         self.vector_list = self._generate_vectors()
-        # self.vectors = None
 
     @property
-    def vectors(self):
+    def vectors(self) -> np.array:
         """
         Using property to dynamically update vectors
         whenever self.weights is updated.
@@ -51,7 +69,7 @@ class Recommender:
         final_features = np.hstack(all_features)
         return final_features
 
-    def _create_query_vector(self, title_list):
+    def _create_query_vector(self, title_list: list):
         """
         Private function to generate query_vector from input.
 
@@ -126,6 +144,20 @@ class Recommender:
 
         :return: DataFrame of episode ranked by closeness.
         """
+        # Check if num_episodes is a positive integer
+        if not isinstance(num_episodes, int) or num_episodes <= 0:
+            raise ValueError("num_episodes must be a positive integer.")
+
+        # Check if title_list is a list of strings
+        if not isinstance(title_list, list) or not all(
+                isinstance(t, str) for t in title_list):
+            raise TypeError("title_list must be a list of strings.")
+
+        # Check if all the given episode titles are present in metadata.csv
+        if not set(title_list).issubset(set(self.meta['Title'])):
+            raise ValueError(
+                "One or more episode titles not found in metadata.csv")
+
         ids, query_vector = self._create_query_vector(title_list)
         scores = -cosine_similarity(query_vector, self.vectors)
         ranked_ids = list(scores.mean(axis=0).argsort())
