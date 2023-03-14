@@ -180,4 +180,6 @@ More details can be found \[HERE\]\(\) @ ADITI.
 
 <a id="examples"></a>
 ## Examples
+A demonstration of our working application can be seen [here](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md).
+
 More details on how to run our code can be found [here](./examples/README.md).
