@@ -49,8 +49,8 @@ def load_corpus():
                 tensor: Vectorized corpus (embeddings).
                 SentenceTransformer: BertModel for finding closest matches.
     """
-    imdb, script = data_manager.load_data()
-    return episode_query.load_corpus(imdb, script)
+    _, script = data_manager.load_data()
+    return episode_query.load_corpus(script)
 
 
 class TestGetScriptFromEp(unittest.TestCase):
@@ -309,8 +309,8 @@ class TestLoadCorpus(unittest.TestCase):
         """
         Smoke test for load corpus
         """
-        imdb, script = data_manager.load_data()
-        c_object, c_emb, _ = episode_query.load_corpus(imdb, script)
+        _, script = data_manager.load_data()
+        c_object, c_emb, _ = episode_query.load_corpus(script)
 
         self.assertIsInstance(c_object, object)
         self.assertIsInstance(c_emb, torch.Tensor)
