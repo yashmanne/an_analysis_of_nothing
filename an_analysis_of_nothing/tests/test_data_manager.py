@@ -315,6 +315,3 @@ class TestQueryTensor(unittest.TestCase):
         """
         tensor = data_manager.get_episode_query_tensors()
         self.assertIsInstance(tensor, torch.Tensor)
-        
-if __name__ == '__main__':
-    unittest.main()
