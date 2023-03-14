@@ -6,6 +6,8 @@ Beginning on the landing home page, view general descriptive analytics about Jer
 
 Click to filter, scroll, and zoom.
 
+![Episode Rec Image](images/site_nav_4.png)
+
 ### Episode Recommendation
 
 Users can navigate to the Episode Recommendation tab to find new episodes based on the ones they already love. Use the dropdown menu to select how many recommendations to view, and search and enter the titles of some previously enjoyed episodes.
@@ -29,6 +31,8 @@ Upon receiving a response, click any returned episode to view its IMDb descripti
 ### About Us
 
 Navigate to this tab to learn more background information about this UW DATA515 project.
+
+![Episode Rec Image](images/site_nav_5.png)
 
 ## Live Demo
 
