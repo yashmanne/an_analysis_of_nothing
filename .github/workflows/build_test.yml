@@ -233,10 +233,10 @@ jobs:
   # After all the parallel matrix runs for build_test are done
   # for the various python versions, we run this job to send the
   # final code coverage to Coveralls.
-  finish:
+  finish_macos:
     # This job requires that build_test be finished before it
     # can run.
-    needs: build_test
+    needs: build_macos
     if: ${{ always() }}
     runs-on: macos-latest
     steps:
