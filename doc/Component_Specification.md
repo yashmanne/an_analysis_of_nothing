@@ -15,7 +15,7 @@ The data manager handles all data to be loaded and stored upon each iteration of
    - Output: Data in the form of a Pandas DataFrame
 
 - Feature vector for dialogue feature
-   - Input: .NPY files stored within the GitHub repository (an_analysis_of_nothing/an_analysis_of_nothing/static/data/dialogue_tensors), which were      generated via Precompute Tools (below).
+   - Input: .NPY files stored within the GitHub repository (an_analysis_of_nothing/an_analysis_of_nothing/static/data/dialogue_tensors), which were generated via Precompute Tools (below).
    - Output: A torch tensor containing the encoded dialogue feature
 
 It also provides application specific features like line and characters counts for recommendation.
@@ -32,7 +32,7 @@ Stored under the /scripts directory, this component includes tools that are not 
 
 ### Recommender Utility Tools
 Contains a class to create and store all recommendation features for content-based recommendation upon user input on the Recommender Webpage (below).
-The feature generator uses dialogue, key words, sumamries, ratings, sentiment, and the number of lines per character to generate encodings using a sentence transformer model for each Seinfeld episode. These are then used to recommend similar episodes via cosine similarity.
+The feature generator uses dialogue, key words, summaries, ratings, sentiment, and the number of lines per character to generate encodings using a sentence transformer model for each Seinfeld episode. These are then used to recommend similar episodes via cosine similarity.
 
 - Inputs: Cleaned episode metadata and script data from Data Manager
 - Outputs: DataFrame of recommended episodes ranked by similarity. 
