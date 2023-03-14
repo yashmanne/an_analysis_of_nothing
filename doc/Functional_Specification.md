@@ -46,14 +46,14 @@ The data used for this application was downloaded from [Kaggle](https://www.kagg
 ### Episode Recommendation
 1. Website: Prompts user to enter number of desired recs and favorite episode titles.
 2. User: Enters both prompts.
-4. Website: Returns n episodes with highest similarity and their metadata via a clickable DataFrame.
+4. Website: Returns n episodes with the highest similarity along with their metadata via a clickable DataFrame.
 5. User: Clicks on an episode.
 6. Website: Displays the episode description.
 
 ### Episode Querying
 
 #### General
-1. User: Utilizes the search bar to type in general events/occurrences (X goes to a movie, X fights with Y, etc).
+1. User: Utilizes the search bar to type in general events/occurrences (X goes to a movie, X fights with Y, etc.).
 2. User: Hits enter key on keyboard. 
 3. Website: Displays episodes that satisfy the query and their metadata via a clickable DataFrame.
 4. User: Clicks on an episode.
@@ -64,7 +64,7 @@ The data used for this application was downloaded from [Kaggle](https://www.kagg
 4. User: Interacts with and toggles descriptive analytics as seen fit.
 
 #### Advanced Search
-1. User: Optionally navigates to side bar and selects which filters to apply to search tool.
+1. User: Optionally navigates to sidebar and selects which filters to apply to search tool.
 2. Website: Displays selection box or slider depending on user input.
 4. User: Selects the season(s), speaking character(s), and/or episode rating (range).
 5. User: Click the search button.
