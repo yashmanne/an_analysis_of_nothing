@@ -9,65 +9,68 @@ Despite the show having cemented its place as one of the greatest sitcoms to dat
 ## User Profile
 
 ### User #1
-- This user is a diehard Seinfeld fan who wants easier searchability for which episode to watch next.
-- This user would like to be recommended episodes based on their prior tastes.
-- This user wants to be able to search the tool for specific episodes, characters, scenes, lines, etc.
-- This user needs a simple user interface that's faster than going to Wikipedia/Netflix etc.
-- They also need a high level of detail, since this user is already well-acquainted with Seinfeld.
-- This user has an average level of technology skill (is acquainted with similar tools (Google, Wiki, etc.).
+- Diehard Seinfeld fan who wants easier searchability for which episode to watch next.
+- Wants to receive episode recommendations based on their prior tastes.
+- Would like to search the tool for specific episodes, characters, scenes, lines, etc.
+- Needs a simple user interface that's faster than Wikipedia/Netflix etc. 
+- Prefers a high level of detail, since this user is already well-acquainted with Seinfeld. This includes viewing specific episode insights that they wouldn't already know about the show, such as sentiment statistics. 
+- Has an average level of technology skill (is acquainted with similar tools such as Google, Wiki, etc.).
 - Might prefer a more exploratory user interface (starting with search bar/ recommender).
 
 ### User #2
-- This user is not familiar with Seinfeld and is curious about episodes, characters, etc.
-- The user might like to look at the top 10 ranked episodes, which order to watch, some interesting plot arcs to follow.
-- This user needs a simple user interface that's faster than going to Wikipedia/Netflix etc
-- They need a guided exploratory interface as they are not well-acquainted with Seinfeld.
+- Unfamiliar with Seinfeld and is curious about episodes, characters, etc.
+- Prefers a low level of detail, since this user has no background knowledge. This includes viewing high level episode insights that they wouldn't already know about the show, such as the top 10 ranked episodes, some interesting plot arcs to follow, and character appearances. 
+- Would only use the query tool for broad topics and general plot arcs.
+- Needs a simple user interface that's faster than Wikipedia/Netflix etc. 
+- Needs a guided exploratory interface as they are not well-acquainted with Seinfeld.
 
 ### User #3
-- This is the NLP expert who will visit the site to perform regular maintenance.
-- This user wants to keep the system up to date and make sure there are no bugs. 
-- Fine tune the model/features as necessary using additional data from the same set or improve upon the model by introducing new corpora of data.
+- Developer who will visit the site to perform regular maintenance.
+- Wants to keep the system up to date and make sure there are no bugs. 
+- Fine tune the models and their features as necessary.
+- Improve upon the model by introducing new corpora of data or using additional data from the same set.
 - Might want more details and transparency about the training data and model building process.
 
 ## Data Sources
 
-The data used for this application was downloaded from [Kaggle](https://www.kaggle.com/datasets/thec03u5/seinfeld-chronicles) and scraped from [IMDB](https://www.imdb.com/interfaces/). Both datasets are saved as CSV files and accessed as a dataframe.
+The data used for this application was downloaded from [Kaggle](https://www.kaggle.com/datasets/thec03u5/seinfeld-chronicles) and scraped from [IMDB](https://www.imdb.com/interfaces/), and contain Seinfeld episode scripts and metadata. Both datasets are saved as CSV files and accessed as a dataframe.
 
 ## Use Cases
 
+### General Analysis
+1. User: Selects seasons of interest.
+2. Website: Displays general analytics like number of lines spoken by main four and episode rating, by season.
+3. User: Interacts with and toggles visualizations as seen fit.
+
+
 ### Episode Recommendation
-
-#### Episode Similarity
-1. Website: Display “Enter/choose your favorite episodes!”.
-2. User: Selects n ranked episode titles in order of favorability.
-3. Could be a text field/auto-fill field or a dropdown menu.
-4. Website: Returns 3 potential episodes to watch based on similarity to prior episodes and 1 that is vastly different.
-
-#### Advanced Character Level: (Episode Recommender with greater search criteria)
-1. Website: Display “Advanced Episode Recommender”.
-2. User: Choose on a dropdown menu which character(s) must be the main focus of the episode.
-3. Website: Returns 3 potential episodes to watch based on similarity to prior episodes and where the focus is the selected 4. character, and 1 that is vastly different.
+1. Website: Prompts user to enter number of desired recs and favorite episode titles.
+2. User: Enters both prompts.
+4. Website: Returns n episodes with highest similarity and their metadata via a clickable DataFrame.
+5. User: Clicks on an episode.
+6. Website: Displays the episode description.
 
 ### Episode Querying
 
 #### General
 1. User: Utilizes the search bar to type in general events/occurrences (X goes to a movie, X fights with Y, etc).
-2. User: Clicks the search button.
-3. Website: Displays a list of episodes that satisfy the query.
-4. User: Click on any episode to learn more (descriptive analytics).
+2. User: Hits enter key on keyboard. 
+3. Website: Displays episodes that satisfy the query and their metadata via a clickable DataFrame.
+4. User: Clicks on an episode.
+5. Website: Displays the episode description and Descriptive Analytics (below).
 
-#### Specific
-1. User: Select advanced search option.
-2. User: Input key words in the search bar.
-3. User: Select the season, character, and/or episode rank (range).
-4. User: Click the search button.
-5. Website: Display a list of episodes that fit the user entered criteria (descriptive analytics).
+#### Descriptive Analytics
+1. Website: Displays dashboard of descriptive sentiment statistics (consisting of a bar chart and sunburst chart) upon user click.
+4. User: Interacts with and toggles descriptive analytics as seen fit.
 
-### Descriptive Analytics
-1. Website: List of episodes from general or specific search.
-2. User: Selects an episode of interest.
-3. Website: Returns dashboard of descriptive statistics and visualizations.
-4. User: Filters or toggles descriptive analytics as seen fit.
+#### Advanced Search
+1. User: Optionally navigates to side bar and selects which filters to apply to search tool.
+2. Website: Displays selection box or slider depending on user input.
+4. User: Selects the season(s), speaking character(s), and/or episode rating (range).
+5. User: Click the search button.
+6. Website: Displays episodes that satisfy the query *and* user filters via a clickable DataFrame.
+
+
 
 
 
