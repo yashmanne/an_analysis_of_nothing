@@ -11,8 +11,6 @@ class MockObject:
     def __getattr__(self, name):
         if name == 'query':
             return load_corpus()
-        else:
-            raise AttributeError(f"'MockObject' object has no attribute '{name}'")
 
 def load_corpus():
     imdb, script = data_manager.load_data()
@@ -117,8 +115,6 @@ def mocked_read_csv(*args):
 
     if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
-    elif args[0] == data_constants.EPISODE_LINK:
-        return mock_imdb_data
     else:
         return mock_imdb_data
 
@@ -204,11 +200,9 @@ def mocked_read_csv_large(*args):
 
     if args[0] == data_constants.SCRIPTS_LINK:
         return mock_script_data
-    elif args[0] == data_constants.EPISODE_LINK:
-        return mock_imdb_data
-
     else:
         return mock_imdb_data
+
 
 class TestEpisodeQuery(unittest.TestCase):
     """
