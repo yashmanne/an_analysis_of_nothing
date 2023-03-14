@@ -4,10 +4,12 @@ on:
   push:
     branches:
       - qa_chandler
+      - qa_branch
       - main
   pull_request:
     branches:
       - qa_chandler
+      - qa_branch
       - main
 
 jobs:
