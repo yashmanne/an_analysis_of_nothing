@@ -122,7 +122,7 @@ jobs:
   finish:
     # This job requires that build_test be finished before it
     # can run.
-    needs: build_test
+    needs: build_ubuntu
     if: ${{ always() }}
     runs-on: ubuntu-latest
     steps:
