@@ -590,9 +590,9 @@ class TestError(unittest.TestCase):
         imdb, _ = data_manager.load_data()
 
         with self.assertRaises(TypeError):
-            episode_query.get_characters('imdb', [4])
+            episode_query.get_seasons('imdb', [4])
         with self.assertRaises(TypeError):
-            episode_query.get_characters(imdb, 'script')
+            episode_query.get_seasons(imdb, 'script')
 
     @patch('utils.data_manager.pd.read_csv',
            side_effect=mock_functions.mocked_read_csv_large)
@@ -643,3 +643,13 @@ class TestError(unittest.TestCase):
         """
         with self.assertRaises(TypeError):
             episode_query.extract_argmax('emotion')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_selected_row(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        with self.assertRaises(TypeError):
+            episode_query.get_selected_row('emotion')
