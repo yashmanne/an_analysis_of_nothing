@@ -35,6 +35,19 @@ def filter_search_results(search_string, season_choice, rating_choice,
             search string from the filtered dataframe.
     """
     # pylint: disable=too-many-arguments, too-many-return-statements
+    if not isinstance(season_choice, (list, type(None))):
+        raise TypeError("season_choice must be a list or None.")
+    if not isinstance(rating_choice, (tuple, list, type(None))):
+        raise TypeError("rating_choice must be a tuple or None.")
+    if not isinstance(char_choice, (list, tuple, type(None))):
+        raise TypeError("char_choice must be a list or None.")
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(df_script, (pd.DataFrame)):
+        raise TypeError("df_script must be pandas dataframe")
+    if not isinstance(search_string, (str)):
+        raise TypeError("search_string must be a string")
+
     if season_choice and rating_choice and char_choice:
         filtered_df = get_characters(df_imdb,
                                      df_script,
@@ -119,6 +132,8 @@ def load_corpus(df_script):
         tensor: Vectorized corpus (embeddings).
         SentenceTransformer: BertModel for finding closest matches.
     """
+    if not isinstance(df_script, (pd.DataFrame)):
+        raise TypeError("df_script must be pandas dataframe")
     embedder = SentenceTransformer('all-MiniLM-L6-v2')
     corpus = df_script.Dialogue.values
     corpus_embeddings = data_manager.get_episode_query_tensors(num_shards=10)
@@ -135,8 +150,15 @@ def query_episodes(df_imdb, df_script, query):
     Returns:
         pd.DataFrame: The 5 closest matches to the search string.
     """
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(df_script, (pd.DataFrame)):
+        raise TypeError("df_script must be pandas dataframe")
+    if not isinstance(query, (str)):
+        raise TypeError("query must be a string")
+
     corpus, corpus_embeddings, embedder = st.session_state.query
-    df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score' : []})
+    df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score': []})
     query_embedding = embedder.encode(query, convert_to_tensor=True)
     # Cosine-similarity and torch.topk for highest scores
     cos_scores = util.cos_sim(query_embedding, corpus_embeddings)[0]
@@ -154,7 +176,7 @@ def query_episodes(df_imdb, df_script, query):
                           == df_script.iloc[x]['SEID']]['Title'].values[0])
     df_imdb = df_imdb.loc[df_imdb.Title.isin(
         df.drop_duplicates(
-        subset=['Title']).iloc[0:5].Title
+            subset=['Title']).iloc[0:5].Title
     )]
     return df_imdb
 
@@ -170,6 +192,9 @@ def get_selected_row(search_results):
         response (pd.DataFrame): a DataFrame containing all
             metadata for the row selected by the user.
     """
+    if not isinstance(search_results, (pd.DataFrame)):
+        raise TypeError("search_results must be pandas dataframe")
+
     search_results = search_results[
         ['SEID', 'Title', 'averageRating', 'Director', 'Writers']
     ]
@@ -202,7 +227,7 @@ def get_selected_row(search_results):
                       height=min(min_height +
                                  len(search_results) *
                                  row_height, max_height)
-                     )
+                      )
 
     # Convert the AgGrid into a pandas dataframe row
     return pd.DataFrame(response['selected_rows'])
@@ -220,6 +245,13 @@ def get_characters(df_imdb, df_script, char_choice):
         pd.DataFrame: an IMDb DataFrame of only the episodes that
             contain dialogue by the selected character(s).
     """
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(df_script, (pd.DataFrame)):
+        raise TypeError("df_script must be pandas dataframe")
+    if not isinstance(char_choice, (list)):
+        raise TypeError("char_choice must be a list")
+
     char_list = df_script.groupby('SEID')['Character'].apply(list)
     df_imdb = df_imdb.sort_values('SEID')
     df_char = pd.DataFrame(char_list).reset_index()
@@ -242,6 +274,10 @@ def get_seasons(df_imdb, season_choice):
         pd.DataFrame: an IMDb DataFrame of only the episodes that
             are from the selected season(s).
     """
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(season_choice, (list)):
+        raise TypeError("season_choice must be a list")
     return df_imdb.loc[df_imdb.Season.isin(season_choice)]
 
 
@@ -256,6 +292,10 @@ def get_ratings(df_imdb, rating_choice):
         pd.DataFrame: an IMDb DataFrame of only the episodes that
             are rated within the selected rating range.
     """
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(rating_choice, (list, tuple)):
+        raise TypeError("rating_choice must be a tuple")
     upper = df_imdb.loc[df_imdb.averageRating <= rating_choice[1]]
     return upper.loc[upper.averageRating >= rating_choice[0]]
 
@@ -270,6 +310,13 @@ def get_script_from_ep(df_imdb, df_script, episode):
     Returns:
         pd.DataFrame: The DataFrame of dialogue occurrences.
     """
+    if not isinstance(df_imdb, (pd.DataFrame)):
+        raise TypeError("df_imdb must be pandas dataframe")
+    if not isinstance(df_script, (pd.DataFrame)):
+        raise TypeError("df_script must be pandas dataframe")
+    if not isinstance(episode, (str)):
+        raise TypeError("episode must be a string")
+
     # Filter the IMDb data for the selected episode
     selected_episodes = df_imdb.loc[df_imdb['Title'] == episode]
     # Filter the script data for the selected SEIDs
@@ -286,6 +333,8 @@ def extract_emotions(row):
     Returns:
         pd.Series: A series containing individual emotion values for the row.
     """
+    if not isinstance(row, (pd.Series)):
+        raise TypeError("row must be a pandas series")
     happy = row['Happy']
     angry = row['Angry']
     surprise = row['Surprise']
@@ -307,6 +356,8 @@ def extract_argmax(row):
         str: The key corresponding to the maximum value in the dictionary,
         or 'No Emotion' if all values are zero.
     """
+    if not isinstance(row, (pd.Series)):
+        raise TypeError("row must be a pandas series")
     emotions_dict = dict(extract_emotions(row))
     if all(value == 0 for value in emotions_dict.values()):
         return 'No Emotion'

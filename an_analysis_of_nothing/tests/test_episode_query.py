@@ -491,3 +491,165 @@ class TestFilterSearchResults(unittest.TestCase):
             char_choice, imdb, script)
         rows = episode_query.get_selected_row(search_results)
         self.assertIsInstance(rows, pd.DataFrame)
+
+
+class TestError(unittest.TestCase):
+    """
+    Test class for the filter_search_results() method
+    """
+
+    def setUp(self):
+        pass
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_filter_errors(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = [1]
+        rating_choice = [7, 10]
+        char_choice = ['JERRY']
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                search_string, 'season_choice', rating_choice,
+                char_choice, imdb, script)
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                search_string, season_choice, 'rating_choice',
+                char_choice, imdb, script)
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                search_string, season_choice, rating_choice,
+                'char_choice', imdb, script)
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                search_string, season_choice, rating_choice,
+                char_choice, 'imdb', script)
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                search_string, season_choice, rating_choice,
+                char_choice, imdb, 'script')
+        with self.assertRaises(TypeError):
+            episode_query.filter_search_results(
+                5, season_choice, rating_choice,
+                char_choice, imdb, script)
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_load_errors(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        with self.assertRaises(TypeError):
+            episode_query.load_corpus('script')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_query_errors(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            episode_query.query_episodes('imdb', script, 'query')
+        with self.assertRaises(TypeError):
+            episode_query.query_episodes(imdb, 'script', 'query')
+        with self.assertRaises(TypeError):
+            episode_query.query_episodes(imdb, script, 5)
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_get_chars(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            episode_query.get_characters('imdb', script, ['CHARS'])
+        with self.assertRaises(TypeError):
+            episode_query.get_characters(imdb, 'script', ['CHARS'])
+        with self.assertRaises(TypeError):
+            episode_query.get_characters(imdb, script, '[]')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_get_seasons(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, _ = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            episode_query.get_seasons('imdb', [4])
+        with self.assertRaises(TypeError):
+            episode_query.get_seasons(imdb, 'script')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_get_ratings(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, _ = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            episode_query.get_ratings('imdb', (3, 4))
+        with self.assertRaises(TypeError):
+            episode_query.get_ratings(imdb, 'script')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_script_from_ep(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+
+        with self.assertRaises(TypeError):
+            episode_query.get_script_from_ep('imdb', script, 'Title')
+        with self.assertRaises(TypeError):
+            episode_query.get_script_from_ep(imdb, 'script', 'Title')
+        with self.assertRaises(TypeError):
+            episode_query.get_script_from_ep(imdb, script, ['Title'])
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_extract_emotion(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        with self.assertRaises(TypeError):
+            episode_query.extract_emotions('emotion')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_extract_argmax(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        with self.assertRaises(TypeError):
+            episode_query.extract_argmax('emotion')
+
+    @patch('utils.data_manager.pd.read_csv',
+           side_effect=mock_functions.mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_selected_row(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        with self.assertRaises(TypeError):
+            episode_query.get_selected_row('emotion')
