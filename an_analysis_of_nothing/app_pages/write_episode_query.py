@@ -115,6 +115,7 @@ def main():
             pass
 
         # Set IMDb description of user selected episode
+        # pylint: disable=R0801
         if len(response) == 0:
             desc = 'Choose an episode to view its IMDb description!'
         else:
