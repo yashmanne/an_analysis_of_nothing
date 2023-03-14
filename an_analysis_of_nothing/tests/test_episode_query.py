@@ -168,7 +168,7 @@ def mocked_read_csv_large(*args):
         'polishing shoes', 'birthday party', 'dream', 'video store']"],
 
         [4, 2, "May 31, 1990", "Larry David, Jerry Seinfeld", "Tom Cherones", 
-        "S02E02", "tt0697784",
+        "S04E02", "tt0697784",
         "The Stakeout", 4, 23, "5113", 8, "Jerry and George stake \
         out the lobby of an office building to \
         find a woman Jerry met at a party but whose name and phone \
@@ -187,9 +187,10 @@ def mocked_read_csv_large(*args):
         'polishing shoes', 'birthday party', 'dream', 'video store']"],
     ]
     data_scripts_raw = [
-        ['JERRY', 'Are you through?', 'S01E01', 4, 1, 0, 0, 0, 0, 0, 3],
-        ['GEORGE', 'Are you through?', 'S01E01', 4, 1, 0, 0, 0, 0, 0, 3],
-
+        ['JERRY', 'Are you through?', 'S01E01', 1, 1, 0, 0, 0, 0, 0, 3],
+        ['GEORGE', 'Are you through?', 'S01E01', 1, 1, 0, 0, 0, 0, 0, 3],
+        ['KRAMER', 'Are you through?', 'S01E02', 1, 2, 0, 0, 0, 0, 0, 3],
+        ['GEORGE', 'Are you through?', 'S04E02', 4, 2, 0, 0, 0, 0, 0, 3],
     ] * 50000
 
 
@@ -531,9 +532,128 @@ class TestFilterSearchResults(unittest.TestCase):
         char_choice = ['JERRY']
         filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
                           char_choice, imdb, script)
-        print(filtered_df.head())
-        print(search_results.head())
         self.assertEqual(True, filtered_df.iloc[0]['char_check'])
         self.assertEqual(1, filtered_df.iloc[0]['Season'])
         self.assertGreater(np.min(filtered_df['averageRating']), 6.9)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_rating_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = [1]
+        rating_choice = None
+        char_choice = ['JERRY']
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertEqual(True, filtered_df.iloc[0]['char_check'])
+        self.assertNotIn(2, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 1)
+
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_rating_char_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = [1]
+        rating_choice = None
+        char_choice = None
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertNotIn(4, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 2)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_season_char_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = None
+        rating_choice = [8,10]
+        char_choice = None
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertIn(4, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 2)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_season_rating_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = None
+        rating_choice = None
+        char_choice = ['KRAMER']
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertIn(2, filtered_df['EpisodeNo'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 1)
+        
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_season_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = None
+        rating_choice = [8,8.5]
+        char_choice = ['GEORGE']
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertIn(4, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 1)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_char_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = [1, 4]
+        rating_choice = [8,9]
+        char_choice = None
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        self.assertIn(1, filtered_df['Season'].tolist())
+        self.assertIn(4, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 2)
+    
+    @patch('utils.data_manager.pd.read_csv', side_effect=mocked_read_csv_large)
+    @patch('streamlit.session_state', MockObject())
+    def test_all_none(self, _):
+        """
+        Tests when non of arguments are null
+        """
+        imdb, script = data_manager.load_data()
+        search_string = "Jerry waits in lobby"
+        season_choice = None
+        rating_choice = None
+        char_choice = None
+        filtered_df, search_results = episode_query.filter_search_results(search_string, season_choice, rating_choice,
+                          char_choice, imdb, script)
+        print(filtered_df.head())
+        print(search_results.head())
+        self.assertIn(1, filtered_df['Season'].tolist())
+        self.assertIn(2, filtered_df['EpisodeNo'].tolist())
+        self.assertIn(4, filtered_df['Season'].tolist())
+        self.assertEqual(len(filtered_df['averageRating']), 3)
+        pd.testing.assert_frame_equal(filtered_df, imdb)
+        
+
         
