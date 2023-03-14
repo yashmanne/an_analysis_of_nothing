@@ -39,6 +39,7 @@ def get_episode_query_tensors(num_shards: int = 10) -> torch.Tensor:
         npy_tensor = np.load(f"./static/data/dialogue_tensors/tensor_{i}.npy")
         all_tensors.append(npy_tensor)
     npy_2d = np.concatenate(all_tensors)
+    # pylint:disable=no-member
     torch_tensor = torch.from_numpy(npy_2d)
     return torch_tensor
 
