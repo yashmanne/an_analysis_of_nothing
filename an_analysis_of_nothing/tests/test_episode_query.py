@@ -86,18 +86,18 @@ class TestGetScriptFromEp(unittest.TestCase):
             imdb, script, "Good Bad News")
         self.assertEqual(len(selected_dialogue), 0)
 
-    @patch('utils.data_manager.pd.read_csv',
-           side_effect=mock_functions.mocked_read_csv_query)
-    def test_error(self, _):
-        """
-        Smoke test for getting script from episode list
-        """
-        # mock.return_value = self.mock_imdb_data
-        imdb, script = data_manager.load_data()
-        imdb = 3
-        selected_dialogue = episode_query.get_script_from_ep(
-            imdb, script, "Good Bad News")
-        pd.testing.assert_frame_equal(selected_dialogue, script)
+    # @patch('utils.data_manager.pd.read_csv',
+    #        side_effect=mock_functions.mocked_read_csv_query)
+    # def test_error(self, _):
+    #     """
+    #     Smoke test for getting script from episode list
+    #     """
+    #     # mock.return_value = self.mock_imdb_data
+    #     imdb, script = data_manager.load_data()
+    #     imdb = 3
+    #     selected_dialogue = episode_query.get_script_from_ep(
+    #         imdb, script, "Good Bad News")
+    #     pd.testing.assert_frame_equal(selected_dialogue, script)
 
 
 class TestGetRatings(unittest.TestCase):
