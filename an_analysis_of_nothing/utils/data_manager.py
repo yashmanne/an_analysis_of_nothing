@@ -1,3 +1,6 @@
+"""
+Contains functions that count/modify original data.
+"""
 from collections import OrderedDict
 from typing import Tuple, List, Optional
 import numpy as np
