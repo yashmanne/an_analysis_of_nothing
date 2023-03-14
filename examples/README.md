@@ -1,12 +1,5 @@
 # Examples
 
-## Deployment
-Our app was deployed using Streamlit Sharing via https://share.streamlit.io/. 
-Learn more about [deploying](https://docs.streamlit.io/streamlit-community-cloud/get-started/deploy-an-app) and [sharing](https://docs.streamlit.io/streamlit-community-cloud/get-started/share-your-app#sharing-public-apps) a public Streamlit web app.
-
-Public Website: [nothing.streamlit.app](https://nothing.streamlit.app/)
-Navigate to the GitHub icon in the top right to view source material.
-
 ## Running Locally
 
 ### 1. Clone the Git Repo
@@ -52,6 +45,13 @@ streamlit run an_analysis_of_nothing/app.py
 ```
 
 See An Analysis of Nothing in your local browser!
+
+## Deployment
+Our app was deployed using Streamlit Sharing via https://share.streamlit.io/. 
+Learn more about [deploying](https://docs.streamlit.io/streamlit-community-cloud/get-started/deploy-an-app) and [sharing](https://docs.streamlit.io/streamlit-community-cloud/get-started/share-your-app#sharing-public-apps) a public Streamlit web app.
+
+Public Website: [nothing.streamlit.app](https://nothing.streamlit.app/)
+Navigate to the GitHub icon in the top right to view source material.
 
 
 ## Navigating the site
