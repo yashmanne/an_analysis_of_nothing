@@ -75,6 +75,7 @@ NEED TO UPDATE AFTER EXAMPLES ARE DONE.
 │   │   │   ├── lead.png
 │   │   │   ├── newman_.jpg
 │   │   │   ├── README.md
+│   │   ├── README.md
 │   ├── tests/
 │   │   ├── __init__.py
 │   │   ├── mock_functions.py
