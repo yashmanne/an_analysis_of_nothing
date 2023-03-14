@@ -34,7 +34,7 @@ def filter_search_results(search_string, season_choice, rating_choice,
         tuple: The filtered df_imdb dataframe, and the closest matches to the
             search string from the filtered dataframe.
     """
-    # pylint: disable=too-many-arguments, too-many-return-statements
+    # pylint: disable=too-many-arguments, too-many-return-statements, too-many-branches
     if not isinstance(season_choice, (list, type(None))):
         raise TypeError("season_choice must be a list or None.")
     if not isinstance(rating_choice, (tuple, list, type(None))):
@@ -157,6 +157,7 @@ def query_episodes(df_imdb, df_script, query):
     if not isinstance(query, (str)):
         raise TypeError("query must be a string")
 
+    # pylint:disable=no-member
     corpus, corpus_embeddings, embedder = st.session_state.query
     df = pd.DataFrame({'Dialogue': [], 'Index': [], 'Score': []})
     query_embedding = embedder.encode(query, convert_to_tensor=True)
@@ -252,12 +253,14 @@ def get_characters(df_imdb, df_script, char_choice):
     if not isinstance(char_choice, (list)):
         raise TypeError("char_choice must be a list")
 
+    # pylint:disable=unsubscriptable-object
     char_list = df_script.groupby('SEID')['Character'].apply(list)
     df_imdb = df_imdb.sort_values('SEID')
     df_char = pd.DataFrame(char_list).reset_index()
     df_char = df_char[df_char.SEID.isin(df_imdb.SEID)].sort_values('SEID')
     df_imdb['char_list'] = df_char['Character']
     df_imdb = df_imdb.dropna()
+    # pylint:disable=singleton-comparison
     df_imdb['char_check'] = df_imdb.char_list.apply(
         lambda x: all(char in x for char in char_choice))
     return df_imdb.loc[df_imdb.char_check == True]
