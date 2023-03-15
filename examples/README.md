@@ -6,7 +6,7 @@ This folder contains the files for various demonstrations including:
   * [3. Loading Data](#3-loading-data)
 * [Deployment](#deployment)
 * [Web Application](#web-application)
-* **[Video Demonstration](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md)**
+* **[Video Demonstration]()**
 
 <a id="running-locally"></a>
 ## Running Locally
@@ -64,4 +64,4 @@ Public Website: **[nothing.streamlit.app](https://nothing.streamlit.app/)**
 <a id="web-application"></a>
 ## Web Application
 * Click [here](./site_navigation.md) for a website walk-through with text.
-* There is also a visual **[Video Demonstration](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md)** for accessibility.
+* There is also a visual **[Video Demonstration](https://drive.google.com/file/d/1KPQyFiidUAzbk1oaAdEksbGXqCCfxCCf/view)** for accessibility.
