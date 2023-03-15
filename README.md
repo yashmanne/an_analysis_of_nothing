@@ -193,6 +193,6 @@ More details can be found [here](./examples/README.md).
 
 <a id="examples"></a>
 ## Examples
-A video demonstration of our working application can be seen [here](https://github.com/HWNi/DATA515-Project/blob/master/examples/EXAMPLES.md).
+A video demonstration of our working application can be seen [here](https://drive.google.com/file/d/1KPQyFiidUAzbk1oaAdEksbGXqCCfxCCf/view).
 
 More details on how to run our code can be found [here](./examples/README.md).
