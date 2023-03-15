@@ -42,7 +42,7 @@ Public Website: **[nothing.streamlit.app](https://nothing.streamlit.app/)**
   
 <a id="repository-structure"></a>
 ## Repository Structure
-NEED TO UPDATE AFTER EXAMPLES ARE DONE.
+Here is an overview of our project structure:
 ```
 ├── an_analysis_of_nothing/
 │   ├── app_pages/
