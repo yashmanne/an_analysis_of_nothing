@@ -22,7 +22,7 @@ git clone https://github.com/yashmanne/an_analysis_of_nothing.git
 ### 2. Local Environment Setup
 To create our specified `nothing` Conda environment, run the following command:
 ```bash
-conda create -f environment.yml
+conda env create -f environment.yml
 ```
 Once the Conda environment is created, it can be activated by:
 ```bash
