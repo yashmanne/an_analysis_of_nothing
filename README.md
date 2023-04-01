@@ -149,7 +149,7 @@ This application is built on top of multiple Python packages with specific versi
 
 To create our specified `nothing` Conda environment, run the following command:
 ```bash
-conda create -f environment.yml
+conda env create -f environment.yml
 ```
 
 Once the Conda environment is created, it can be activated by:
