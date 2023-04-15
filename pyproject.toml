@@ -13,7 +13,7 @@ requires-python = ">=3.9, <4.0"
 dependencies = [
     "streamlit=1.18",
     "numpy>=1.2",
-    "pandas>=1.4",
+    "pandas>=1.4, <2.0",
     "scikit-learn>=1.2",
     "plotly>=5",
     "nltk",
