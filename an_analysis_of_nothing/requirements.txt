@@ -7,4 +7,5 @@ sentence-transformers
 streamlit==1.18
 streamlit-option-menu
 streamlit-aggrid
+altair=4.2 # bug fix for 'ModuleNotFoundError: No module named 'altair.vegalite.v4'
 
