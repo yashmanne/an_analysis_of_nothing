@@ -4,7 +4,6 @@ pandas==1.5.3
 plotly==5.9.0
 scikit-learn==1.2.2
 sentence-transformers==2.2.2
-streamlit==1.18.0
 streamlit-option-menu==0.3.6
 streamlit-aggrid==0.3.4.post3
 altair<5
