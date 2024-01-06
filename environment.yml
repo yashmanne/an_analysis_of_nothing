@@ -24,3 +24,4 @@ dependencies:
      - streamlit-option-menu
      - streamlit-aggrid
      - pylint
+     - altair==4.2
