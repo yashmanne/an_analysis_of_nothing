@@ -7,7 +7,7 @@ sentence-transformers==2.2.2
 streamlit==1.18.0
 streamlit-option-menu==0.3.6
 streamlit-aggrid==0.3.4.post3
-altair==4.2.0
+altair<5
 torch==2.1.2
 tqdm==4.66.1
 
